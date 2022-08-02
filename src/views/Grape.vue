@@ -94,70 +94,70 @@ export default {
         }
       ],
       line: [
-        // {
-        //   source: '初始镜像',
-        //   target: 'Kuai1'
-        // },
-        // {
-        //   source: '初始镜像',
-        //   target: '艾佛i那时的佛i就爱上对方'
-        // },
-        // {
-        //   source: '艾佛i那时的佛i就爱上对方',
-        //   target: '快照7642'
-        // },
-        // {
-        //   source: '快照7642',
-        //   target: '1'
-        // },
-        // {
-        //   source: '快照7642',
-        //   target: 'bannnnn'
-        // },
-        // {
-        //   source: 'bannnnn',
-        //   target: '7587'
-        // }
-        // {
-        //   source: '初始镜像',
-        //   target: '123456'
-        // },
-        // {
-        //   source: 'CentOS-7.7.1908-x64-desktop',
-        //   target: '123456'
-        // },
-        // {
-        //   source: '123456',
-        //   target: '222222'
-        // },
-        // {
-        //   source: 'hgjghjghjghj',
-        //   target: '67676767'
-        // },
-        // {
-        //   source: '是特殊',
-        //   target: '9违法及无服务范围'
-        // },
-        // {
-        //   source: 'jhhj',
-        //   target: 'hgjghjghjghj'
-        // },
-        // {
-        //   source: '222222',
-        //   target: 'jhhj'
-        // },
-        // {
-        //   source: 'hgjghjghjghj',
-        //   target: '大青蛙多'
-        // },
-        // {
-        //   source: 'jhhj',
-        //   target: '是特殊'
-        // },
-        // {
-        //   source: 'hgjghjghjghj',
-        //   target: '页股份英文歌'
-        // }
+        {
+          source: '初始镜像',
+          target: 'Kuai1'
+        },
+        {
+          source: '初始镜像',
+          target: '艾佛i那时的佛i就爱上对方'
+        },
+        {
+          source: '艾佛i那时的佛i就爱上对方',
+          target: '快照7642'
+        },
+        {
+          source: '快照7642',
+          target: '1'
+        },
+        {
+          source: '快照7642',
+          target: 'bannnnn'
+        },
+        {
+          source: 'bannnnn',
+          target: '7587'
+        },
+        {
+          source: '初始镜像',
+          target: '123456'
+        },
+        {
+          source: 'CentOS-7.7.1908-x64-desktop',
+          target: '123456'
+        },
+        {
+          source: '123456',
+          target: '222222'
+        },
+        {
+          source: 'hgjghjghjghj',
+          target: '67676767'
+        },
+        {
+          source: '是特殊',
+          target: '9违法及无服务范围'
+        },
+        {
+          source: 'jhhj',
+          target: 'hgjghjghjghj'
+        },
+        {
+          source: '222222',
+          target: 'jhhj'
+        },
+        {
+          source: 'hgjghjghjghj',
+          target: '大青蛙多'
+        },
+        {
+          source: 'jhhj',
+          target: '是特殊'
+        },
+        {
+          source: 'hgjghjghjghj',
+          target: '页股份英文歌'
+        }
       ]
     }
   },
@@ -207,7 +207,7 @@ export default {
 
       this.chartInstance.on('click', (param) => {
         console.log('param---->', param)
-        this.updateChart(param.dataIndex)
+        // this.updateChart(param.dataIndex)
       })
     },
     getData() {
@@ -283,25 +283,23 @@ export default {
 
       this.treeToList(copyArr, this.listData)
 
-      console.log(this.listData)
-
       this.listData.forEach((item) => {
         if (item.children) {
           delete item.children
         }
       })
       // 来源不是镜像管理往右移动200
-      this.listData.forEach((item) => {
-        if (item.scene_name) {
-          item.x += 200
-        }
-      })
-      // 镜像管理来源快照固定x坐标
-      this.listData.forEach((item) => {
-        if (!item.scene_name) {
-          item.x = 200
-        }
-      })
+      // this.listData.forEach((item) => {
+      //   if (item.scene_name) {
+      //     item.x += 200
+      //   }
+      // })
+      // // 镜像管理来源快照固定x坐标
+      // this.listData.forEach((item) => {
+      //   if (!item.scene_name) {
+      //     item.x = 200
+      //   }
+      // })
     },
     renderTree(data, level, x, y) {
       return data.forEach((item) => {
@@ -309,6 +307,8 @@ export default {
         item.level = level
         item.x = x += 200
         item.y = y
+
+        console.log(item.children && item.children.length)
         if (item.children) {
           this.renderTree(item.children, level + 1, xs, y + 100)
         }
@@ -350,8 +350,8 @@ export default {
   width: 100vw;
   height: 100vh;
   .myChart {
-    width: 500px;
-    height: 500px;
+    width: 100vw;
+    height: 100vh;
     // background-color: pink;
   }
 }
