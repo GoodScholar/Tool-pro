@@ -5,10 +5,13 @@
 -->
 <template>
   <div class="home">
-    <!--  @blur="selectBlur"
-      @clear="selectClear"
-      @change="selectChange" -->
-    <el-select v-model="value" placeholder="请选择" multiple filterable>
+    <el-select
+      v-model="value"
+      placeholder="请选择"
+      multiple
+      filterable
+      collapse-tags
+    >
       <el-option
         v-for="(item, index) in options"
         :key="index"
@@ -16,14 +19,23 @@
         :value="item.value"
       />
     </el-select>
+
+    <div>
+      <CountTo :startVal="0" :endVal="100" :duration="10000"></CountTo>
+    </div>
+
+    <div class="box-line"></div>
   </div>
 </template>
 
 <script>
+import CountTo from '@/components/CountTo.vue'
 export default {
   name: 'HomeItem',
   props: {},
-  components: {},
+  components: {
+    CountTo
+  },
   data() {
     return {
       value: [],
@@ -85,12 +97,63 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-select {
-  width: 240px;
+// :deep(.el-select) {
+//   width: 240px;
+// }
+
+// :deep(.el-select__tags) {
+//   max-width: 200px;
+//   overflow-x: scroll;
+//   flex-wrap: nowrap;
+// }
+
+img {
+  width: 100px;
+  height: 100px;
 }
-::v-deep .el-select__tags {
-  max-width: 200px;
-  overflow-x: scroll;
-  flex-wrap: nowrap;
+
+.box-line,
+.box-line::before,
+.box-line::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.box-line {
+  width: 200px;
+  height: 200px;
+  margin: auto;
+  color: #69ca62;
+  box-shadow: inset 0 0 0 1px rgba(105, 202, 98, 0.5);
+}
+.box-line::before,
+.box-line::after {
+  content: '';
+  z-index: -1;
+  margin: -5%;
+  box-shadow: inset 0 0 0 2px;
+  animation: clipMe 8s linear infinite;
+}
+.box-line::before {
+  animation-delay: -4s;
+}
+
+@keyframes clipMe {
+  0%,
+  100% {
+    clip: rect(0px, 220px, 2px, 0px);
+  }
+  25% {
+    clip: rect(0px, 2px, 220px, 0px);
+  }
+  50% {
+    clip: rect(218px, 220px, 220px, 0px);
+  }
+  75% {
+    clip: rect(0px, 220px, 220px, 218px);
+  }
 }
 </style>

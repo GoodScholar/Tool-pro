@@ -30,6 +30,18 @@ const routes = [
     path: '/form',
     name: 'Form',
     component: () => import(/* webpackChunkName: "about" */ '@/views/Form.vue')
+  },
+  {
+    path: '/scroll',
+    name: 'scroll',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../components/ScrollList.vue')
+  },
+  {
+    path: '/collapse',
+    name: 'collapse',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../components/Collapse.vue')
   }
 ]
 
