@@ -53,6 +53,10 @@ export default {
         {
           image_name: 'hgjghjghjghj',
           name: '页股份英文歌'
+        },
+        {
+          image_name: 'hgjghjghjghj',
+          name: '啊撒旦拉萨记录'
         }
       ],
       listData: [],
@@ -157,6 +161,10 @@ export default {
         {
           source: 'hgjghjghjghj',
           target: '页股份英文歌'
+        },
+        {
+          source: 'hgjghjghjghj',
+          target: '啊撒旦拉萨记录'
         }
       ]
     }
@@ -275,31 +283,43 @@ export default {
         }
       }
 
-      console.log(result)
-
       this.renderTree(result, 1, 0, 100)
 
-      const copyArr = JSON.parse(JSON.stringify(result))
+      this.treeToList(JSON.parse(JSON.stringify(result)), this.listData)
 
-      this.treeToList(copyArr, this.listData)
-
-      this.listData.forEach((item) => {
+      this.listData.forEach((item, index) => {
         if (item.children) {
           delete item.children
         }
+
+        item.index = index
       })
-      // 来源不是镜像管理往右移动200
-      // this.listData.forEach((item) => {
-      //   if (item.scene_name) {
-      //     item.x += 200
-      //   }
-      // })
-      // // 镜像管理来源快照固定x坐标
-      // this.listData.forEach((item) => {
-      //   if (!item.scene_name) {
-      //     item.x = 200
-      //   }
-      // })
+
+      this.listData.forEach((item) => {
+        this.chongFu(this.listData).forEach((info) => {
+          const currentLevel = this.listData.filter((current) => {
+            return current.level === info.level
+          })
+          const maxX = Math.max.apply(
+            Math,
+            currentLevel.map((item) => {
+              return item.x
+            })
+          )
+
+          if (item.name === info.image_name && item.x === info.x) {
+            this.listData[info.index].x = maxX + 200
+          }
+        })
+
+        // if (item.scene_name) {
+        //   // 来源不是镜像管理往右移动200
+        //   item.x += 200
+        // } else {
+        //   // 镜像管理来源快照固定x坐标
+        //   item.x = 200
+        // }
+      })
     },
     renderTree(data, level, x, y) {
       return data.forEach((item) => {
@@ -308,7 +328,6 @@ export default {
         item.x = x += 200
         item.y = y
 
-        console.log(item.children && item.children.length)
         if (item.children) {
           this.renderTree(item.children, level + 1, xs, y + 100)
         }
@@ -328,6 +347,14 @@ export default {
           this.treeToList(item.children, list)
         }
       })
+    },
+    chongFu(data) {
+      const findByItems = (eq) => (arr) =>
+        arr.filter((x, i) => arr.find((y, j) => i !== j && eq(x, y)))
+
+      const duplicatedItems = findByItems((a, b) => a.x === b.x && a.y === b.y)
+
+      return duplicatedItems(data)
     }
   },
   created() {
