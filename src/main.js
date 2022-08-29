@@ -3,15 +3,19 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './plugins/element.js'
-
 import 'element-ui/lib/theme-chalk/index.css'
-import './style/normalize.css'
+import './style/normalize.scss'
+import './utils/dialog'
+
+// import scroll from 'vue-seamless-scroll'
 
 import * as echarts from 'echarts'
 
 Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
+
+// Vue.use(scroll)
 
 Vue.directive('drag', {
   // 1.指令绑定到元素上回立刻执行bind函数，只执行一次

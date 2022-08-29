@@ -349,3 +349,43 @@ template {
 [hidden] {
   display: none;
 }
+
+body {
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 4px;
+    box-shadow: none;
+    background: #dcdcdc;
+  }
+
+  &::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    border-radius: 4px;
+    background: transparent;
+    box-shadow: none;
+  }
+  * {
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      /*滚动条里面小方块*/
+      border-radius: 4px;
+      box-shadow: none;
+      background: #dcdcdc;
+    }
+
+    &::-webkit-scrollbar-track {
+      /*滚动条里面轨道*/
+      border-radius: 4px;
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}

@@ -5,13 +5,8 @@
 -->
 <template>
   <div class="home">
-    <el-select
-      v-model="value"
-      placeholder="请选择"
-      multiple
-      filterable
-      collapse-tags
-    >
+    <!-- collapse-tags -->
+    <el-select v-model="value" placeholder="请选择" multiple filterable>
       <el-option
         v-for="(item, index) in options"
         :key="index"
@@ -89,23 +84,31 @@ export default {
     //   console.log(val)
     //   // this.value = val
     //   this.$forceUpdate()
-    // }
+    // },
+    handleScroll(e) {
+      const scrollDiv = document.getElementsByClassName('el-select__tags')[0]
+      const detail = e.wheelDelta || e.detail // 判断鼠标是向上滚动还是向下滚动 detail=120 向下 detail=-120 向上
+      const moveStep = 2
+      scrollDiv.scrollLeft += detail > 0 ? moveStep * 10 : moveStep * -10
+    }
   },
   created() {},
-  mounted() {}
+  mounted() {
+    window.addEventListener('mousewheel', this.handleScroll, false)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-// :deep(.el-select) {
-//   width: 240px;
-// }
+:deep(.el-select) {
+  min-width: 400px;
+}
 
-// :deep(.el-select__tags) {
-//   max-width: 200px;
-//   overflow-x: scroll;
-//   flex-wrap: nowrap;
-// }
+:deep(.el-select__tags) {
+  max-width: 200px;
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+}
 
 img {
   width: 100px;

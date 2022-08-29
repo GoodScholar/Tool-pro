@@ -1,0 +1,341 @@
+<!--
+  功能：测试scroll-table
+  时间：2022年08月18日 08:10:03
+  版本：v1.0
+-->
+<template>
+  <div class="elTable">
+    <ScrollElTable
+      :tableData="tableData"
+      :setHeight="480"
+      :isScroll="true"
+      :isStripe="true"
+      :headerStyle="headerStyle"
+      :cellStyle="cellStyle"
+    ></ScrollElTable>
+  </div>
+</template>
+
+<script>
+import ScrollElTable from '../components/ScrollElTable.vue'
+export default {
+  name: 'TestItem',
+  props: {},
+  components: {
+    ScrollElTable
+  },
+  data() {
+    return {
+      // tableData: [
+      //   {
+      //     id: '12987122',
+      //     name: '王小虎',
+      //     amount1: '234',
+      //     amount2: '3.2',
+      //     amount3: 10
+      //   },
+      //   {
+      //     id: '12987122',
+      //     name: '王小虎',
+      //     amount1: '2313',
+      //     amount2: '3.2',
+      //     amount3: 112
+      //   },
+      //   {
+      //     id: '12987122',
+      //     name: '王小虎',
+      //     amount1: '12334',
+      //     amount2: '3.2',
+      //     amount3: 11
+      //   },
+      //   {
+      //     id: '12987123',
+      //     name: '王小虎',
+      //     amount1: '165',
+      //     amount2: '4.43',
+      //     amount3: 12
+      //   },
+      //   {
+      //     id: '12987123',
+      //     name: '王小虎',
+      //     amount1: '165',
+      //     amount2: '4.43',
+      //     amount3: 12
+      //   },
+      //   {
+      //     id: '12987123',
+      //     name: '王小虎',
+      //     amount1: '165',
+      //     amount2: '4.43',
+      //     amount3: 12
+      //   },
+      //   {
+      //     id: '12987124',
+      //     name: '王小虎',
+      //     amount1: '324',
+      //     amount2: '1.9',
+      //     amount3: 9
+      //   },
+      //   {
+      //     id: '12987124',
+      //     name: '王小虎',
+      //     amount1: '324',
+      //     amount2: '1.9',
+      //     amount3: 9
+      //   },
+      //   {
+      //     id: '12987125',
+      //     name: '王小虎',
+      //     amount1: '621',
+      //     amount2: '2.2',
+      //     amount3: 17
+      //   },
+      //   {
+      //     id: '12987126',
+      //     name: '王小虎',
+      //     amount1: '539',
+      //     amount2: '4.1',
+      //     amount3: 15
+      //   }
+      // ],
+      // tableData: [
+      //   {
+      //     date: '2016-05-02',
+      //     name: '王小虎1',
+      //     address: '上海市普陀区金沙江路 1518 弄'
+      //   },
+      //   {
+      //     date: '2016-05-04',
+      //     name: '王小虎2',
+      //     address: '上海市普陀区金沙江路 1517 弄'
+      //   },
+      //   {
+      //     date: '2016-05-01',
+      //     name: '王小虎3',
+      //     address: '上海市普陀区金沙江路 1519 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎4',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎5',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎6',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎7',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎8',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎9',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎10',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎11',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎12',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎13',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   },
+      //   {
+      //     date: '2016-05-03',
+      //     name: '王小虎14',
+      //     address: '上海市普陀区金沙江路 1516 弄'
+      //   }
+      // ],
+      headerStyle: {
+        // backgroundColor: 'rgba(7, 26, 36, 0.2)',
+        // color: '#00F6FF',
+        // fontSize: '12px',
+        // borderColor: 'transparent'
+      },
+      cellStyle: {
+        // backgroundColor: 'rgba(7, 26, 36, 0.2)',
+        // borderColor: 'rgba(255, 255, 255, 0.15)',
+        // fontSize: '14px',
+        // color: '#fff'
+      },
+      tableData: [
+        {
+          name: '城乡镇',
+          children: [
+            {
+              year: '2020',
+              children: [
+                {
+                  desc1: '1'
+                },
+                {
+                  desc1: '11'
+                }
+              ]
+            },
+            {
+              year: '2021',
+              children: [
+                {
+                  desc: '2'
+                },
+                {
+                  desc: '22'
+                }
+              ]
+            },
+            {
+              year: '2022',
+              children: [
+                {
+                  desc: '3'
+                },
+                {
+                  desc: '33'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: '浏河镇',
+          children: [
+            {
+              year: '2020',
+              children: [
+                {
+                  desc: '1'
+                },
+                {
+                  desc: '11'
+                }
+              ]
+            },
+            {
+              year: '2021',
+              children: [
+                {
+                  desc: '2'
+                },
+                {
+                  desc: '22'
+                }
+              ]
+            },
+            {
+              year: '2022',
+              children: [
+                {
+                  desc: '3'
+                },
+                {
+                  desc: '33'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          name: '沙溪镇',
+          children: [
+            {
+              year: '2020',
+              children: [
+                {
+                  desc: '1'
+                },
+                {
+                  desc: '11'
+                }
+              ]
+            },
+            {
+              year: '2021',
+              children: [
+                {
+                  desc: '2'
+                },
+                {
+                  desc: '22'
+                }
+              ]
+            },
+            {
+              year: '2022',
+              children: [
+                {
+                  desc: '3'
+                },
+                {
+                  desc: '33'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      newObj: {},
+      newArr: [],
+      obj: {}
+    }
+  },
+  watch: {
+    obj: {
+      handler: function (newVal) {
+        console.log(newVal)
+      },
+      deep: true
+    }
+  },
+  computed: {},
+  methods: {
+    // 树形数据转为一维数组
+    flatArray(list) {
+      return list.reduce((res, v) => {
+        if (v.children) {
+          res = res.concat(
+            this.flatArray(v.children).map((o) => ({
+              ...v,
+              ...o,
+              children: null
+            }))
+          )
+        } else {
+          res.push(v)
+        }
+        return res
+      }, [])
+    }
+  },
+  created() {},
+  mounted() {
+    this.tableData = this.flatArray(this.tableData)
+  }
+}
+</script>
+
+<style lang="scss" scoped></style>

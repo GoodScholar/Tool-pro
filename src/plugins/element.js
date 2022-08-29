@@ -40,7 +40,10 @@ import {
   Upload,
   Timeline,
   TimelineItem,
-  Popover
+  Popover,
+  Collapse,
+  CollapseItem,
+  Empty
 } from 'element-ui'
 
 Vue.use(Button)
@@ -81,6 +84,9 @@ Vue.use(Upload)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(Popover)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
+Vue.use(Empty)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

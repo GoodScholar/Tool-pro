@@ -7,8 +7,14 @@ const routes = [
   {
     path: '/',
     redirect: {
-      name: 'grape'
+      name: 'Test'
     }
+  },
+  {
+    path: '/scroll',
+    name: 'Scroll',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/scrollTable.vue')
   },
   {
     path: '/home',
@@ -35,13 +41,40 @@ const routes = [
     path: '/scroll',
     name: 'scroll',
     component: () =>
-      import(/* webpackChunkName: "about" */ '../components/ScrollList.vue')
+      import(/* webpackChunkName: "about" */ '@/components/ScrollList.vue')
+  },
+  {
+    path: '/dialog',
+    name: 'Dialog',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '@/views/Dialog.vue')
+  },
+  {
+    path: '/tree',
+    name: 'Tree',
+    component: () => import(/* webpackChunkName: "about" */ '@/views/Tree.vue')
   },
   {
     path: '/collapse',
-    name: 'collapse',
+    name: 'Collapse',
     component: () =>
-      import(/* webpackChunkName: "about" */ '../components/Collapse.vue')
+      import(/* webpackChunkName: "about" */ '@/views/Collapse.vue')
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: () => import(/* webpackChunkName: "about" */ '@/views/Test.vue')
+  },
+  {
+    path: '/lubo',
+    name: 'LuBo',
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/LunBoTu.vue')
+  },
+  {
+    path: '/sign',
+    name: 'Ensign',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Sign.vue')
   }
 ]
 

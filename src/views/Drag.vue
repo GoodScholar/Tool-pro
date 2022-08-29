@@ -43,8 +43,6 @@
       v-show="isShow"
       @click="visiblePop = isShow = false"
     ></div>
-
-    <!--  -->
   </div>
 </template>
 
@@ -61,28 +59,6 @@ export default {
       isOption: false,
       isShow: false,
       player: null,
-      gridData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ],
       options: [
         {
           value: '选项1',
