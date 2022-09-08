@@ -5,28 +5,22 @@
 -->
 <template>
   <div class="seal-container">
-    <div class="left">
-      <ul>
-        <li
-          ref="listItem"
-          class="listItem mb"
-          v-for="(item, index) in dragList"
-          :key="index"
-          draggable="true"
-          @dragstart="dragStart($event, item)"
-          @dragend="dragEnd"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
-    </div>
-    <!-- @mousemove="" -->
-    <div
-      ref="center"
-      class="center"
-      @drop="dropDragDoM"
-      @dragover.prevent="dropDragOver"
-    >
+    <!--  -->
+    <ul class="left">
+      <li
+        class="listItem mb"
+        v-for="(item, index) in dragList"
+        :key="index"
+        draggable
+        @dragstart="dragStart($event, item)"
+        @dragend="dragEnd"
+        @mousedown="getMouseDownPosition"
+      >
+        {{ item.name }}
+      </li>
+    </ul>
+    <!-- @mousemove="" "dropDragOver"-->
+    <div ref="center" class="center" @drop="dropDragDoM" @dragover.prevent>
       <div
         ref="dragItem"
         v-for="(item, index) in dropData"
@@ -38,22 +32,27 @@
         <i class="delIcon el-icon-close" @click="getModel(item)"></i>
         {{ item.name }}
       </div>
+
+      <pdfView></pdfView>
     </div>
     <div class="right">right</div>
   </div>
 </template>
 
 <script>
+import pdfView from '../components/pdfView'
 export default {
   name: 'E-Seal',
   props: {},
-  components: {},
+  components: { pdfView },
   data() {
     return {
-      mainHeight: '',
-      mainWidth: '',
-      childWidth: '',
-      childHeight: '',
+      mainHeight: 0,
+      mainWidth: 0,
+      childWidth: 0,
+      childHeight: 0,
+      mouseWidth: 0,
+      mouseHeight: 0,
       dragList: [
         {
           name: 'DIV',
@@ -94,6 +93,12 @@ export default {
     }
   },
   methods: {
+    // 计算拖动元素内鼠标的位置
+    getMouseDownPosition(e) {
+      // 计算鼠标的坐标
+      this.mouseWidth = e.clientX - e.target.offsetLeft
+      this.mouseHeight = e.clientY - e.target.offsetTop
+    },
     // 开始拖动元素、将拖拽对象的参数传递给拖拽存放地
     dragStart(e, item) {
       e.dataTransfer.setData('item', JSON.stringify(item))
@@ -102,29 +107,22 @@ export default {
     dragEnd(e) {
       e.dataTransfer.clearData()
     },
-    dropDragOver(e) {
-      console.log(e)
-    },
     // 将拖拽的元素，释放在目标盒子中
     dropDragDoM(e) {
       // 获取拖拽对象的参数
       let data = e.dataTransfer.getData('item')
-
-      console.log(data)
       data = JSON.parse(data)
+
       // 鼠标落点位置相对于当前拖拽存放地的 x y
-      // data.left = e.x - e.target.offsetLeft
-      // data.top = e.y - e.target.offsetTop
-      // console.log(data)
-      data.left = e.layerX
-      data.top = e.layerY
+      data.left = e.layerX - this.mouseWidth
+      data.top = e.layerY - this.mouseHeight
 
       this.dropData.push(data)
     },
     // 拖动元素
     dragMove(e, item) {
-      const Ewidth = e.target.offsetWidth
-      const Eheight = e.target.offsetHeight
+      const EWidth = e.target.offsetWidth + 2
+      const EHeight = e.target.offsetHeight + 2
 
       const disX = e.clientX - e.target.offsetLeft
       const disY = e.clientY - e.target.offsetTop
@@ -136,21 +134,21 @@ export default {
         if (top <= 0) {
           top = 0
         }
-        if (top >= this.mainHeight - Eheight) {
-          top = this.mainHeight - Eheight
+        if (top >= this.mainHeight - EHeight) {
+          top = this.mainHeight - EHeight
         }
 
         if (left <= 0) {
           left = 0
         }
-        if (left >= this.mainWidth - Ewidth) {
-          left = this.mainWidth - Ewidth
+        if (left >= this.mainWidth - EWidth) {
+          left = this.mainWidth - EWidth
         }
 
         item.left = left
         item.top = top
       }
-      document.onmouseup = (e) => {
+      document.onmouseup = () => {
         document.onmousemove = null
         document.onmouseup = null
       }
@@ -172,7 +170,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 :root {
   --width: 160px;
 }
@@ -195,7 +193,7 @@ export default {
   .center {
     position: relative;
     flex-grow: 1;
-    overflow: hidden;
+    overflow: auto;
     margin: 0 20px;
     border: 1px solid #000;
     .dragItem {
@@ -210,7 +208,7 @@ export default {
       border: 1px solid #000;
       user-select: none;
       cursor: pointer;
-
+      z-index: 9999;
       .delIcon {
         display: none;
         position: absolute;

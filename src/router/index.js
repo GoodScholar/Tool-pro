@@ -69,12 +69,31 @@ const routes = [
     path: '/lubo',
     name: 'LuBo',
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/LunBoTu.vue')
+      import(/* webpackChunkName: "LuBo" */ '../views/LunBoTu.vue')
   },
   {
     path: '/sign',
     name: 'Ensign',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Sign.vue')
+    component: () =>
+      import(/* webpackChunkName: "Ensign" */ '../views/Sign.vue')
+  },
+  {
+    path: '/seal',
+    name: 'EnSeal',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../views/E-Seal.vue')
+  },
+  {
+    path: '/pdf',
+    name: 'pdf',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../components/pdfView.vue')
+  },
+  {
+    path: '/huanHang',
+    name: 'huanHang',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../views/huanHang.vue')
   }
 ]
 
