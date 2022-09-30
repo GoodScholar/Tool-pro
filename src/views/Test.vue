@@ -13,19 +13,28 @@
       :headerStyle="headerStyle"
       :cellStyle="cellStyle"
     ></ScrollElTable>
+
+    <div style="text-align: center">
+      <QrCode :id="'QrCode'" :text="codeUrl" />
+    </div>
   </div>
 </template>
 
 <script>
 import ScrollElTable from '../components/ScrollElTable.vue'
+
+import QrCode from '@/components/qrCode.vue'
 export default {
   name: 'TestItem',
   props: {},
   components: {
-    ScrollElTable
+    ScrollElTable,
+    QrCode
   },
   data() {
     return {
+      codeUrl:
+        'https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=6336620009a2e72bee6c06b9', // 后端返回的二维码地址
       // tableData: [
       //   {
       //     id: '12987122',
@@ -80,7 +89,7 @@ export default {
       //     id: '12987124',
       //     name: '王小虎',
       //     amount1: '324',
-      //     amount2: '1.9',
+      //     amount2: '1.9',·
       //     amount3: 9
       //   },
       //   {
