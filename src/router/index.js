@@ -37,12 +37,12 @@ const routes = [
     name: 'Form',
     component: () => import(/* webpackChunkName: "about" */ '@/views/Form.vue')
   },
-  {
-    path: '/scroll',
-    name: 'scroll',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '@/components/ScrollList.vue')
-  },
+  // {
+  //   path: '/scroll',
+  //   name: 'scroll',
+  //   component: () =>
+  //     import(/* webpackChunkName: "about" */ '@/components/ScrollList.vue')
+  // },
   {
     path: '/dialog',
     name: 'Dialog',
@@ -94,6 +94,24 @@ const routes = [
     name: 'huanHang',
     component: () =>
       import(/* webpackChunkName: "EnSeal" */ '../views/huanHang.vue')
+  },
+  {
+    path: '/toggle',
+    name: 'Toggle',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../views/toggle.vue')
+  },
+  {
+    path: '/tabs',
+    name: 'Tabs',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../views/tabs.vue')
+  },
+  {
+    path: '/clone',
+    name: 'Clone',
+    component: () =>
+      import(/* webpackChunkName: "EnSeal" */ '../views/dragClone.vue')
   }
 ]
 
