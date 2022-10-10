@@ -17,6 +17,8 @@
     <div style="text-align: center">
       <QrCode :id="'QrCode'" :text="codeUrl" />
     </div>
+
+    <div class="square_brackets"></div>
   </div>
 </template>
 
@@ -347,4 +349,33 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.square_brackets {
+  border: none;
+  position: relative;
+  padding: 0;
+  height: 130px;
+  width: 400px;
+}
+
+.square_brackets:before,
+.square_brackets:after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 15px;
+  border: 3px solid #979797;
+  position: absolute;
+  top: -2px;
+}
+
+.square_brackets:before {
+  left: 0;
+  border-right: 0;
+}
+
+.square_brackets:after {
+  right: 0;
+  border-left: 0;
+}
+</style>

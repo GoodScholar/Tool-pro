@@ -1,8 +1,14 @@
 <template>
   <div class="wrapper">
-    <div style="display: flex">
+    <div class="wrapper__cell">
       <i class="el-icon-arrow-left preview" @click="preview"></i>
-      <div class="my-inbox" ref="box">
+      <div
+        class="my-inbox"
+        id="nav"
+        ref="nav"
+        @mouseenter="stop"
+        @mouseleave="move"
+      >
         <div
           class="item"
           v-for="(item, index) in menuItems"
@@ -16,10 +22,6 @@
       </div>
       <i class="el-icon-arrow-right next" @click="next"></i>
     </div>
-
-    <button v-longpress="incrementPlusTen" @click="incrementPlusOne">
-      {{ value }}
-    </button>
   </div>
 </template>
 
@@ -122,12 +124,10 @@ export default {
         }
       ],
       timer: null,
-      value: 10
+      value: 10,
+      moveDistance: 0,
+      overOffsetWidth: 0
     }
-  },
-  beforeMount() {
-    // 挂着前，修改默认选项
-    this.currentIndex = this.DefaultIndex
   },
   methods: {
     getStyle(select) {
@@ -137,7 +137,7 @@ export default {
       }
     },
     clickMenuItem(idx, event) {
-      const inbox = this.$refs.box
+      const inbox = this.$refs.nav
 
       // 点击事件传递给调用者
       if (this.currentIndex !== idx) {
@@ -151,36 +151,84 @@ export default {
       inbox.scrollLeft = left
     },
     preview() {
-      const inbox = this.$refs
-      console.log(inbox)
-    },
-    next() {
-      const inbox = this.$refs.box
+      this.moveDistance -= 100
 
-      this.currentIndex++
-      // if (this.currentIndex === 2) {
-      //   this.currentIndex = 3
-      // } else
-      if (this.currentIndex >= this.menuItems.length) {
-        this.currentIndex = this.menuItems.length - 1
+      if (this.moveDistance < 0) {
+        this.moveDistance = 0
       }
 
-      console.log(this.currentIndex)
-
-      const e = this.$refs.box.children[this.currentIndex]
-      const left = e.offsetLeft - inbox.clientWidth / 2 + e.offsetWidth / 2
-      inbox.scrollLeft = left
+      this.$refs.nav.scrollLeft = this.moveDistance
     },
+    next() {
+      // const inbox = this.$refs.nav
+      // this.currentIndex++
+      // if (this.currentIndex >= this.menuItems.length) {
+      //   this.currentIndex = this.menuItems.length - 1
+      // }
+      // const e = this.$refs.box.children[this.currentIndex]
+      // const left = e.offsetLeft - inbox.clientWidth / 2 + e.offsetWidth / 2
+      // inbox.scrollLeft = left
 
-    // 增加1
-    incrementPlusOne() {
-      this.value++
+      this.moveDistance += 100
+      if (this.moveDistance > this.overOffsetWidth) {
+        this.moveDistance = this.overOffsetWidth
+      }
+      this.$refs.nav.scrollLeft = this.moveDistance
     },
-    // 增加10
-    incrementPlusTen() {
-      this.value++
-      console.log(this.value)
+    // 鼠标滚轮控制滚动
+    scrollInit() {
+      // 获取要绑定事件的元素
+      const scrollDiv = document.getElementById('nav')
+      // document.addEventListener('DOMMouseScroll', handler, false)
+      // 添加滚轮滚动监听事件，一般是用下面的方法，上面的是火狐的写法
+      scrollDiv.addEventListener('mousewheel', handler, false)
+      // 滚动事件的出来函数
+      function handler(event) {
+        // 获取滚动方向
+        const detail = event.wheelDelta || event.detail
+        // 定义滚动方向，其实也可以在赋值的时候写
+        const moveForwardStep = 1
+        const moveBackStep = -1
+        // 定义滚动距离
+        let step = 0
+        // 判断滚动方向,这里的100可以改，代表滚动幅度，也就是说滚动幅度是自定义的
+        if (detail < 0) {
+          step = moveForwardStep * 100
+        } else {
+          step = moveBackStep * 100
+        }
+        // 对需要滚动的元素进行滚动操作
+        scrollDiv.scrollLeft += step
+      }
+    },
+    stop() {
+      // 禁止页面滑动
+      const mo = (e) => {
+        e.preventDefault()
+      }
+      document.body.style.overflow = 'hidden'
+      document.addEventListener('touchmove', mo, false) // 禁止页面滑动
+    },
+    move() {
+      const mo = (e) => {
+        e.preventDefault()
+      }
+      document.body.style.overflow = ''
+      document.addEventListener('touchmove', mo, false) // 禁止页面滑动
     }
+  },
+  beforeMount() {
+    // 挂着前，修改默认选项
+    this.currentIndex = this.DefaultIndex
+  },
+  mounted() {
+    // 调用初始化方法，这里一定是在DOM加载之后调用
+    this.scrollInit()
+    let allOffsetWidth = 0
+    for (let i = 0; i < this.$refs.nav.children.length; i++) {
+      allOffsetWidth += this.$refs.nav.children[i].offsetWidth
+    }
+    this.overOffsetWidth = allOffsetWidth - this.$refs.nav.offsetWidth
   }
 }
 </script>
@@ -188,10 +236,13 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   width: 100%;
+
+  .wrapper__cell {
+    @extend %flex-center-between;
+  }
   .my-inbox {
     position: relative;
-    overflow-y: hidden;
-    overflow-x: scroll;
+    overflow: scroll;
     width: 100%;
     white-space: nowrap;
     background-color: #f2f2f2;
@@ -200,52 +251,27 @@ export default {
     }
     .item {
       display: inline-block;
-      height: 2rem;
+      height: 32px;
       line-height: 2rem;
-      margin: 0.5rem;
-      padding: 0px 0.8rem;
+      margin: 8px;
+      padding: 0 20px;
       text-align: center;
       color: red;
+      cursor: pointer;
     }
     .active {
       background-color: #036875;
       font-weight: bold;
       border-radius: 25px;
       color: #fff;
+      cursor: pointer;
     }
   }
 }
 
 .preview,
 .next {
-  // position: absolute;
-  // top: 14px;
+  font-size: 24px;
   cursor: pointer;
-}
-
-.preview {
-  // left: 0;
-  font-size: 24px;
-}
-.next {
-  // right: 0;
-  font-size: 24px;
-  background-color: pink;
-}
-
-.slide {
-  width: 200px;
-  height: 200px;
-  background: #ccc;
-  text-align: center;
-  line-height: 200px;
-  color: #fff;
-  cursor: move;
-  position: fixed;
-  z-index: 99;
-  right: 10px;
-  bottom: 85px;
-  width: 40px;
-  height: 40px;
 }
 </style>

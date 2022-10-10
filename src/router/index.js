@@ -1,122 +1,156 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+const originalPush = VueRouter.prototype.push
+
+// 解决报错信息：NavigationDuplicated: Avoided redundant navigation to current location
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch((err) => err)
+}
+
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    redirect: {
-      name: 'Test'
-    }
-  },
-  {
-    path: '/scroll',
-    name: 'Scroll',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/scrollTable.vue')
-  },
-  {
-    path: '/home',
-    name: 'home',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '@/views/HomeView.vue')
-  },
-  {
-    path: '/grape',
-    name: 'grape',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Grape.vue')
-  },
-  {
-    path: '/drag',
-    name: 'drag',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Drag.vue')
-  },
-  {
-    path: '/form',
-    name: 'Form',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Form.vue')
-  },
   // {
-  //   path: '/scroll',
-  //   name: 'scroll',
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ '@/components/ScrollList.vue')
+  //   path: '/',
+  //   redirect: {
+  //     name: 'home'
+  //   }
   // },
   {
-    path: '/dialog',
-    name: 'Dialog',
+    path: '/',
+    name: 'HomeIndex',
     component: () =>
-      import(/* webpackChunkName: "about" */ '@/views/Dialog.vue')
-  },
-  {
-    path: '/tree',
-    name: 'Tree',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Tree.vue')
-  },
-  {
-    path: '/collapse',
-    name: 'Collapse',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '@/views/Collapse.vue')
+      import(/* webpackChunkName: "HomeIndex" */ '@/views/Home/layout.vue'),
+    children: [
+      {
+        path: 'drag',
+        name: 'Drag',
+        component: () =>
+          import(
+            /* webpackChunkName: "Drag" */ '@/views/functionItem/Drag.vue'
+          ),
+        meta: {
+          title: '登录页面！'
+        }
+      },
+      {
+        path: 'scroll',
+        name: 'Scroll',
+        component: () =>
+          import(
+            /* webpackChunkName: "Scroll" */ '@/views/functionItem/scrollTable.vue'
+          )
+      },
+      {
+        path: 'grape',
+        name: 'Grape',
+        component: () =>
+          import(
+            /* webpackChunkName: "Grape" */ '@/views/functionItem/Grape.vue'
+          )
+      },
+      {
+        path: 'form',
+        name: 'Form',
+        component: () =>
+          import(/* webpackChunkName: "Form" */ '@/views/functionItem/Form.vue')
+      },
+      {
+        path: 'dialog',
+        name: 'Dialog',
+        component: () =>
+          import(
+            /* webpackChunkName: "Dialog" */ '@/views/functionItem/Dialog.vue'
+          )
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () =>
+          import(/* webpackChunkName: "Tree" */ '@/views/functionItem/Tree.vue')
+      },
+      {
+        path: 'collapse',
+        name: 'Collapse',
+        component: () =>
+          import(
+            /* webpackChunkName: "Collapse" */ '@/views/functionItem/Collapse.vue'
+          )
+      },
+      {
+        path: 'sign',
+        name: 'Ensign',
+        component: () =>
+          import(
+            /* webpackChunkName: "Ensign" */ '@/views/functionItem/Sign.vue'
+          )
+      },
+      {
+        path: 'seal',
+        name: 'EnSeal',
+        component: () =>
+          import(
+            /* webpackChunkName: "EnSeal" */ '@/views/functionItem/E-Seal.vue'
+          )
+      },
+      {
+        path: 'lineFeed',
+        name: 'LineFeed',
+        component: () =>
+          import(
+            /* webpackChunkName: "LineFeed" */ '@/views/functionItem/LineFeed.vue'
+          )
+      },
+      {
+        path: 'toggle',
+        name: 'Toggle',
+        component: () =>
+          import(
+            /* webpackChunkName: "Toggle" */ '@/views/functionItem/toggle.vue'
+          )
+      },
+      {
+        path: 'tabs',
+        name: 'Tabs',
+        component: () =>
+          import(/* webpackChunkName: "Tabs" */ '@/views/functionItem/tabs.vue')
+      },
+      {
+        path: 'clone',
+        name: 'Clone',
+        component: () =>
+          import(
+            /* webpackChunkName: "Clone" */ '@/views/functionItem/dragClone.vue'
+          )
+      },
+      {
+        path: 'panorama',
+        name: 'Panorama',
+        component: () =>
+          import(
+            /* webpackChunkName: "Panorama" */ '../views/functionItem/360Panorama.vue'
+          ),
+        meta: {
+          title: '登录页面！'
+        }
+      }
+    ]
   },
   {
     path: '/test',
     name: 'Test',
     component: () => import(/* webpackChunkName: "about" */ '@/views/Test.vue')
-  },
-  {
-    path: '/lubo',
-    name: 'LuBo',
-    component: () =>
-      import(/* webpackChunkName: "LuBo" */ '../views/LunBoTu.vue')
-  },
-  {
-    path: '/sign',
-    name: 'Ensign',
-    component: () =>
-      import(/* webpackChunkName: "Ensign" */ '../views/Sign.vue')
-  },
-  {
-    path: '/seal',
-    name: 'EnSeal',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../views/E-Seal.vue')
-  },
-  {
-    path: '/pdf',
-    name: 'pdf',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../components/pdfView.vue')
-  },
-  {
-    path: '/huanHang',
-    name: 'huanHang',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../views/huanHang.vue')
-  },
-  {
-    path: '/toggle',
-    name: 'Toggle',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../views/toggle.vue')
-  },
-  {
-    path: '/tabs',
-    name: 'Tabs',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../views/tabs.vue')
-  },
-  {
-    path: '/clone',
-    name: 'Clone',
-    component: () =>
-      import(/* webpackChunkName: "EnSeal" */ '../views/dragClone.vue')
   }
 ]
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  to.meta.title && (document.title = to.meta.title)
+  next()
 })
 
 export default router

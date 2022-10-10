@@ -5,7 +5,7 @@
       <div style="padding-left: 6px">clone例子,左边往右边拖动试试看</div>
       <div class="col">
         <draggable
-          v-model="arr1"
+          v-model="currentList"
           @end="end1"
           :options="{ group: { name: 'itxst', pull: 'clone' }, sort: true }"
           animation="300"
@@ -14,7 +14,7 @@
           <transition-group>
             <div
               :class="item.id == 1 ? 'item forbid' : 'item'"
-              v-for="item in arr1"
+              v-for="item in currentList"
               :key="item.id"
             >
               {{ item.name }}
@@ -23,7 +23,7 @@
         </draggable>
       </div>
       <div class="col">
-        <div style="background-color: pink">
+        <div style="background-color: pink; padding: 20px 0">
           <draggable
             v-model="arr2"
             group="itxst"
@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       // 定义要被拖拽对象的数组
-      arr1: [
+      currentList: [
         { id: 1, name: 'www.itxst.com（不允许停靠）' },
         { id: 2, name: 'www.jd.com' },
         { id: 3, name: 'www.baidu.com' },
@@ -87,6 +87,7 @@ export default {
       moveId: -1
     }
   },
+  computed: {},
   methods: {
     // 左边往右边拖动时的事件
     end1(e) {
@@ -96,7 +97,6 @@ export default {
       // 如果左边
       if (items.length < 2) return
       this.arr2.splice(e.newDraggableIndex, 1)
-
       this.arr3.splice(e.newDraggableIndex, 1)
     },
     // 右边往左边拖动时的事件
@@ -118,6 +118,11 @@ export default {
       if (e.draggedContext.element.id === 4) return false
       if (e.draggedContext.element.id === 11) return false
       return true
+    },
+    distinctArr(arr, id) {
+      return arr.filter((item, index, selfArr) => {
+        return selfArr.findIndex((val) => val[id] === item[id]) === index
+      })
     }
   }
 }
@@ -171,7 +176,7 @@ Array.prototype.filter =
   padding: 6px 12px;
   margin: 0px 10px 0px 10px;
   border: solid 1px #eee;
-  background-color: pink;
+  background-color: #ccc;
   text-align: left;
 }
 .item2 + .item2 {

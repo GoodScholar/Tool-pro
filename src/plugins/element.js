@@ -43,7 +43,8 @@ import {
   Popover,
   Collapse,
   CollapseItem,
-  Empty
+  Empty,
+  MenuItemGroup
 } from 'element-ui'
 
 Vue.use(Button)
@@ -87,6 +88,7 @@ Vue.use(Popover)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
 Vue.use(Empty)
+Vue.use(MenuItemGroup)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

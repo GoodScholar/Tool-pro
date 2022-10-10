@@ -5,7 +5,7 @@
       <i @click="previous" v-html="'<<'"></i>
       <i @click="next">>></i>
       <div class="main-box-tab-content" ref="tabs">
-        <div class="main-box-tab-roll" id="nav">
+        <div class="main-box-tab-roll" id="nav" ref="box">
           <div
             v-for="(item, index) in tabs"
             :key="index"
@@ -13,7 +13,7 @@
               'tab-item-action': actionName === item.name,
               'tab-item': actionName !== item.name
             }"
-            @click.stop="clickTab(item.name, index)"
+            @click.stop="clickTab(item.name, $event)"
           >
             <span>{{ item.meta.title }}</span>
             <i class="el-icon-close" @click.stop="close(item.name, index)"></i>
@@ -123,9 +123,16 @@ export default {
      * 切换tab标签页
      **/
     clickTab(name) {
+      // const inbox = this.$refs.box
+
       if (this.actionName !== name) {
         this.actionName = name
       }
+
+      // // 滚动 到中间
+      // const e = event.currentTarget
+      // const left = e.offsetLeft - inbox.clientWidth / 2 + e.offsetWidth / 2
+      // inbox.scrollLeft = left
     },
 
     /**

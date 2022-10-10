@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import pdfView from '../components/pdfView'
+import pdfView from '@/components/pdfView'
 export default {
   name: 'E-Seal',
   props: {},
