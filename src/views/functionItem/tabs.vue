@@ -7,10 +7,6 @@
       :DefaultIndex="0"
       @clickLzMenuItem="clickMenuItem"
     ></lz-menu>
-
-    <a class="button">
-      <div>click me</div>
-    </a>
   </div>
 </template>
 
@@ -101,17 +97,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.button {
-  margin: 50px;
-  display: inline-block;
-  background: #404ed3;
-  transform: skewX(-45deg);
-}
-.button > div {
-  padding: 15px;
-  color: white;
-  font-size: 24px;
-  transform: skewX(45deg);
-}
-</style>
+<style lang="scss" scoped></style>

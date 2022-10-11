@@ -134,13 +134,14 @@ const routes = [
         meta: {
           title: '登录页面！'
         }
+      },
+      {
+        path: 'test',
+        name: 'Test',
+        component: () =>
+          import(/* webpackChunkName: "about" */ '@/views/Test.vue')
       }
     ]
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Test.vue')
   }
 ]
 

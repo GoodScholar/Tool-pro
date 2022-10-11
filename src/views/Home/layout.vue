@@ -7,7 +7,7 @@
   <el-container>
     <el-header>
       <span class="logo__cell">
-        <img src="@/assets/img/logo.png" class="logo" alt="" />
+        <img src="@/assets/imgs/logo.png" class="logo" alt="" />
         <span class="logo-title">Management</span>
       </span>
     </el-header>

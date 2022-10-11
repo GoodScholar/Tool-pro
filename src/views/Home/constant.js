@@ -79,6 +79,11 @@ export default {
       icon: 'el-icon-menu',
       name: '拖拽克隆',
       path: '/clone'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: '测试',
+      path: '/test'
     }
   ]
 }

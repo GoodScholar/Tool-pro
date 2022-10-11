@@ -44,7 +44,8 @@ import {
   Collapse,
   CollapseItem,
   Empty,
-  MenuItemGroup
+  MenuItemGroup,
+  Progress
 } from 'element-ui'
 
 Vue.use(Button)
@@ -89,6 +90,7 @@ Vue.use(Collapse)
 Vue.use(CollapseItem)
 Vue.use(Empty)
 Vue.use(MenuItemGroup)
+Vue.use(Progress)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

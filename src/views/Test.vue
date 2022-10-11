@@ -5,33 +5,43 @@
 -->
 <template>
   <div class="elTable">
-    <ScrollElTable
-      :tableData="tableData"
-      :setHeight="480"
-      :isScroll="true"
-      :isStripe="true"
-      :headerStyle="headerStyle"
-      :cellStyle="cellStyle"
-    ></ScrollElTable>
-
+    <div style="background-color: rgba(3, 22, 37, 0.85)">
+      <ProgressBar v-for="(item, index) in dealList" :key="index" :obj="item" />
+    </div>
+    <a class="button">
+      <div>click me</div>
+    </a>
     <div style="text-align: center">
       <QrCode :id="'QrCode'" :text="codeUrl" />
     </div>
 
     <div class="square_brackets"></div>
+
+    <div class="tables">
+      <ScrollElTable
+        :tableData="tableData"
+        :setHeight="480"
+        :isScroll="true"
+        :isStripe="true"
+        :headerStyle="headerStyle"
+        :cellStyle="cellStyle"
+      ></ScrollElTable>
+    </div>
   </div>
 </template>
 
 <script>
 import ScrollElTable from '../components/ScrollElTable.vue'
-
+import ProgressBar from '@/components/comGradientProgressBar'
 import QrCode from '@/components/qrCode.vue'
+
 export default {
   name: 'TestItem',
   props: {},
   components: {
     ScrollElTable,
-    QrCode
+    QrCode,
+    ProgressBar
   },
   data() {
     return {
@@ -311,7 +321,13 @@ export default {
       ],
       newObj: {},
       newArr: [],
-      obj: {}
+      obj: {},
+      list: [
+        { id: '001', value: 49, status: '进行中' },
+        { id: '001', value: 68, status: '失败' },
+        { id: '001', value: 90, status: '完成' }
+      ],
+      dealList: []
     }
   },
   watch: {
@@ -340,11 +356,19 @@ export default {
         }
         return res
       }, [])
+    },
+    dealData() {
+      this.dealList = []
+      // 这里要 处理list数据，将value都处理成100以内的数，防止进度条超过100，处理的步骤就不写了
+      // 这里就直接把list里的数据当处理好了，放到dealList中
+      this.dealList = this.list
     }
   },
   created() {},
   mounted() {
     this.tableData = this.flatArray(this.tableData)
+
+    this.dealData()
   }
 }
 </script>
@@ -377,5 +401,22 @@ export default {
 .square_brackets:after {
   right: 0;
   border-left: 0;
+}
+
+.tables {
+  padding: 20px 0;
+}
+
+.button {
+  margin: 50px;
+  display: inline-block;
+  background: #404ed3;
+  transform: skewX(-40deg);
+}
+.button > div {
+  padding: 15px;
+  color: white;
+  font-size: 24px;
+  transform: skewX(40deg);
 }
 </style>
