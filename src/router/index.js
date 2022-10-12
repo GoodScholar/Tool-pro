@@ -57,11 +57,11 @@ const routes = [
           import(/* webpackChunkName: "Form" */ '@/views/functionItem/Form.vue')
       },
       {
-        path: 'dialog',
-        name: 'Dialog',
+        path: 'twoEn',
+        name: 'TwoEn',
         component: () =>
           import(
-            /* webpackChunkName: "Dialog" */ '@/views/functionItem/Dialog.vue'
+            /* webpackChunkName: "Dialog" */ '@/views/functionItem/SecondaryEncapsulation.vue'
           )
       },
       {

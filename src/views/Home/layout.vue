@@ -88,5 +88,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
+  height: 100vh;
+  overflow: auto;
 }
 </style>

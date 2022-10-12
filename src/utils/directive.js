@@ -1,44 +1,60 @@
+/* eslint-disable no-throw-literal */
 import Vue from 'vue'
 
-// 拖动
-Vue.directive('drag', {
-  // 1.指令绑定到元素上回立刻执行bind函数，只执行一次
-  // 2.每个函数中第一个参数永远是el，表示绑定指令的元素，el参数是原生js对象
-  // 3.通过el.focus()是无法获取焦点的，因为只有插入DOM后才生效
-  bind(el) {},
-  // inserted表示一个元素，插入到DOM中会执行inserted函数，只触发一次
-  inserted(el) {
-    const oDiv = el
-    let firstTime = ''
-    let lastTime = ''
-    el.onmousedown = (e) => {
-      const disX = e.pageX - el.offsetLeft
-      const disY = e.pageY - el.offsetTop
-      // 给当前元素添加属性，用于元素状态的判断
-      oDiv.setAttribute('ele-flag', false)
-      oDiv.setAttribute('draging-flag', true)
+/**
+ * 测试传参
+ */
+Vue.directive('zoom', {
+  bind: function (el, binding, vnode) {
+    // console.log(binding)
+  },
+  update: function (el) {},
+  unbind: function (el) {}
+})
 
-      firstTime = new Date().getTime()
-      document.onmousemove = (e) => {
-        el.style.left = e.pageX - disX + 'px'
-        el.style.top = e.pageY - disY + 'px'
-      }
-      document.onmouseup = (event) => {
-        document.onmousemove = document.onmouseup = null
-        lastTime = new Date().getTime()
-        if (lastTime - firstTime > 200) {
-          oDiv.setAttribute('ele-flag', true)
-          event.stopPropagation()
+/**
+ * 拖动 指令
+ */
+Vue.directive('drag', {
+  inserted: function (el) {
+    el.style.cursor = 'move'
+    el.onmousedown = function (e) {
+      const disx = e.pageX - el.offsetLeft
+      const disy = e.pageY - el.offsetTop
+      document.onmousemove = function (e) {
+        let x = e.pageX - disx
+        let y = e.pageY - disy
+        const maxX =
+          document.body.clientWidth -
+          parseInt(window.getComputedStyle(el).width)
+        const maxY =
+          document.body.clientHeight -
+          parseInt(window.getComputedStyle(el).height)
+        if (x < 0) {
+          x = 0
+        } else if (x > maxX) {
+          x = maxX
         }
-        setTimeout(() => {
-          oDiv.setAttribute('draging-flag', false)
-        }, 100)
+
+        if (y < 0) {
+          y = 0
+        } else if (y > maxY) {
+          y = maxY
+        }
+
+        el.style.left = x + 'px'
+        el.style.top = y + 'px'
+      }
+      document.onmouseup = function () {
+        document.onmousemove = document.onmouseup = null
       }
     }
   }
 })
 
-// touch 事件
+/**
+ * touch 指令
+ */
 Vue.directive('touch', {
   // 滑动指令
   bind: function (el, binding, vnode) {
@@ -146,63 +162,9 @@ Vue.directive('touch', {
   }
 })
 
-// 长按事件
-Vue.directive('longpress', {
-  bind: function (el, binding, vNode) {
-    // 确保提供的表达式是函数
-    if (typeof binding.value !== 'function') {
-      // 获取组件名称
-      const compName = vNode.context.name // 将警告传递给控制台
-      let warn = `[longpress:] provided expression '${binding.expression}' is not a function, but has to be `
-      if (compName) {
-        warn += `Found in component '${compName}' `
-      }
-      console.warn(warn)
-    } // 定义变量
-
-    let pressTimer = null // 定义函数处理程序
-
-    // 创建计时器（ 1秒后执行函数 ）
-    const start = (e) => {
-      if (e.type === 'click' && e.button !== 0) {
-        return
-      }
-
-      if (pressTimer === null) {
-        pressTimer = setInterval(() => {
-          // 执行函数
-          handler()
-        }, 1000)
-      }
-    }
-
-    // 取消计时器
-    const cancel = (e) => {
-      // 检查计时器是否有值
-      if (pressTimer !== null) {
-        clearTimeout(pressTimer)
-        pressTimer = null
-      }
-    }
-
-    // 运行函数
-    const handler = (e) => {
-      // 执行传递给指令的方法
-      binding.value(e)
-    }
-
-    // 添加事件监听器
-    el.addEventListener('mousedown', start)
-    el.addEventListener('touchstart', start)
-    // 取消计时器
-    el.addEventListener('click', cancel)
-    el.addEventListener('mouseout', cancel)
-    el.addEventListener('touchend', cancel)
-    el.addEventListener('touchcancel', cancel)
-  }
-})
-
-// v-dialogDrag: 弹窗拖拽属性
+/**
+ * v-dialogDrag: 弹窗拖拽属性
+ */
 Vue.directive('dialogDrag', {
   bind(el, binding, vnode, oldVnode) {
     const dialogHeaderEl = el.querySelector('.el-dialog__header')
@@ -277,38 +239,24 @@ Vue.directive('dialogDrag', {
 
 /***
  * 防抖 单位时间只触发最后一次
- *  @param {?Number|300} time - 间隔时间
- *  @param {Function} fn - 执行事件
- *  @param {?String|"click"} event - 事件类型 例："click"
- *  @param {Array} binding.value - [fn,event,time]
- *  @date  2020-1-29
- *  @author aChuan
- *  例：<el-button v-debounce="[reset,`click`,300]">刷新</el-button>
- *  也可简写成：<el-button v-debounce="[reset]">刷新</el-button>
  */
 Vue.directive('debounce', {
   inserted: function (el, binding) {
-    const [fn, event = 'click', time = 300] = binding.value
+    const time = binding.arg ? binding.arg * 1000 : 1000
     let timer = null
-    el.addEventListener(event, () => {
-      timer && clearTimeout(timer)
-      timer = setTimeout(() => fn(), time)
+    el.addEventListener('click', () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        binding.value()
+      }, time)
     })
   }
 })
 
 /***
  *  节流 每单位时间可触发一次
- *  第一次瞬间触发，最后一次不管是否达到间隔时间依然触发
- * 【考虑到input的change事件】
- *  @param {?Number|300} time - 间隔时间
- *  @param {Function} fn - 执行事件
- *  @param {?String|"click"} event - 事件类型 例："click"
- *  @param {Array} binding.value - [fn,event,time]
- *  @date  2020-1-31
- *  @author aChuan
- *  例：<el-button v-throttle="[reset,`click`,300]">刷新</el-button>
- *  传递参数则：<el-button v-throttle="[()=>reset(param),`click`,300]">刷新</el-button>
  */
 Vue.directive('throttle', {
   inserted: function (el, binding) {
@@ -324,4 +272,270 @@ Vue.directive('throttle', {
       timer = setTimeout(() => (timer = null), time)
     })
   }
+})
+
+/**
+ * 长按 指令
+ */
+Vue.directive('longpress', {
+  bind: function (el, binding, vNode) {
+    if (typeof binding.value !== 'function') {
+      throw 'callback must be a function'
+    }
+    // 定时器时间
+    const time = binding.arg ? binding.arg * 1000 : 1000
+    // 定义变量
+    let pressTimer = null
+    // 创建计时器（ 2秒后执行函数 ）
+    const start = (e) => {
+      if (e.type === 'click' && e.button !== 0) {
+        return
+      }
+      if (pressTimer === null) {
+        pressTimer = setTimeout(() => {
+          handler()
+        }, time)
+      }
+    }
+    // 取消计时器
+    const cancel = (e) => {
+      if (pressTimer !== null) {
+        clearTimeout(pressTimer)
+        pressTimer = null
+      }
+    }
+    // 运行函数
+    const handler = (e) => {
+      binding.value(e)
+    }
+    // 添加事件监听器
+    el.addEventListener('mousedown', start)
+    el.addEventListener('touchstart', start)
+    // 取消计时器
+    el.addEventListener('click', cancel)
+    el.addEventListener('mouseout', cancel)
+    el.addEventListener('touchend', cancel)
+    el.addEventListener('touchcancel', cancel)
+  },
+  // 当传进来的值更新的时候触发
+  componentUpdated(el, { value }) {
+    el.$value = value
+  },
+  // 指令与元素解绑的时候，移除事件绑定
+  unbind(el) {
+    el.removeEventListener('click', el.handler)
+  }
+})
+
+/**
+ * 复制 指令
+ */
+Vue.directive('copy', {
+  bind(el, { value }) {
+    el.$value = value
+    el.handler = () => {
+      if (!el.$value) {
+        // 值为空的时候，给出提示。可根据项目UI仔细设计
+        console.log('无复制内容')
+        return
+      }
+      // 动态创建 textarea 标签
+      const textarea = document.createElement('textarea')
+      // 将该 textarea 设为 readonly 防止 iOS 下自动唤起键盘，同时将 textarea 移出可视区域
+      textarea.readOnly = 'readonly'
+      textarea.style.position = 'absolute'
+      textarea.style.left = '-9999px'
+      // 将要 copy 的值赋给 textarea 标签的 value 属性
+      textarea.value = el.$value
+      // 将 textarea 插入到 body 中
+      document.body.appendChild(textarea)
+      // 选中值并复制
+      textarea.select()
+      const result = document.execCommand('Copy')
+      if (result) {
+        console.log('复制成功') // 可根据项目UI仔细设计
+      }
+      document.body.removeChild(textarea)
+    }
+    // 绑定点击事件，就是所谓的一键 copy 啦
+    el.addEventListener('click', el.handler)
+  },
+  // 当传进来的值更新的时候触发
+  componentUpdated(el, { value }) {
+    el.$value = value
+  },
+  // 指令与元素解绑的时候，移除事件绑定
+  unbind(el) {
+    el.removeEventListener('click', el.handler)
+  }
+})
+
+/**
+ * 水印指令
+ */
+Vue.directive('waterMarker', {
+  bind: function (el, binding) {
+    addWaterMarker(
+      binding.value.text,
+      el,
+      binding.value.font,
+      binding.value.textColor
+    )
+  }
+})
+
+// 使用 canvas 特性生成 base64 格式的图片文件，设置其字体大小，颜色等。
+function addWaterMarker(str, parentNode, font, textColor) {
+  // 水印文字，父元素，字体，文字颜色
+  const can = document.createElement('canvas')
+  parentNode.appendChild(can)
+  can.width = 200
+  can.height = 150
+  can.style.display = 'none'
+  const cans = can.getContext('2d')
+  cans.rotate((-20 * Math.PI) / 180)
+  cans.font = font || '16px Microsoft JhengHei'
+  cans.fillStyle = textColor || 'rgba(180, 180, 180, 0.3)'
+  cans.textAlign = 'left'
+  cans.textBaseline = 'Middle'
+  cans.fillText(str, can.width / 10, can.height / 2)
+  parentNode.style.backgroundImage = 'url(' + can.toDataURL('image/png') + ')'
+}
+
+// 实现文字溢出显示，鼠标移入浮层展示全部 指令
+Vue.directive('showTips', {
+  inserted(el, binding) {
+    const { width, height } = binding.arg
+
+    const curStyle = window.getComputedStyle(el, '') // 获取当前元素的style
+    const textSpan = document.createElement('span') // 创建一个容器来记录文字的width
+    // 设置新容器的字体样式，确保与当前需要隐藏的样式相同
+    textSpan.style.fontSize = curStyle.fontSize
+    textSpan.style.fontWeight = curStyle.fontWeight
+    textSpan.style.fontFamily = curStyle.fontFamily
+    // 将容器插入body，如果不插入，offsetWidth为0
+    document.body.appendChild(textSpan)
+    // 设置新容器的文字
+    textSpan.innerHTML = el.innerText
+    // 如果字体元素大于当前元素，则需要隐藏
+    if (textSpan.offsetWidth > el.offsetWidth) {
+      // 给当前元素设置超出隐藏
+      el.style.overflow = 'hidden'
+      el.style.textOverflow = 'ellipsis'
+      el.style.whiteSpace = 'nowrap'
+      // 鼠标移入
+      el.onmouseenter = function (e) {
+        // 创建浮层元素并设置样式
+        const vcTooltipDom = document.createElement('div')
+        // overflow: auto;
+        vcTooltipDom.style.cssText = `
+            display: inline-block;
+            position: absolute;
+            top: ${e.clientY + 9}px;
+            left: ${e.clientX}px;
+            max-width: ${width}px;
+            max-height:${height}px;
+            background: rgba(0, 0 , 0, .6);
+            color: #fff;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 5px;
+            word-wrap: break-word;
+            z-index: 9999
+          `
+        // 设置id方便寻找
+        vcTooltipDom.setAttribute('id', 'vc-tooltip')
+        // 将浮层插入到body中
+        document.body.appendChild(vcTooltipDom)
+        // 浮层中的文字
+        document.getElementById('vc-tooltip').innerHTML = el.innerText
+      }
+      // 鼠标移出
+      el.onmouseleave = function () {
+        // 找到浮层元素并移出
+        const vcTooltipDom = document.getElementById('vc-tooltip')
+        vcTooltipDom && document.body.removeChild(vcTooltipDom)
+      }
+    }
+    // 记得移除刚刚创建的记录文字的容器
+    document.body.removeChild(textSpan)
+  },
+  // 指令与元素解绑时
+  unbind() {
+    // 找到浮层元素并移除
+    const vcTooltipDom = document.getElementById('vc-tooltip')
+    vcTooltipDom && document.body.removeChild(vcTooltipDom)
+  }
+})
+
+// 表格无限滚动
+Vue.directive('tableInfiniteScroll', {
+  inserted(el, binding) {
+    let tbody = el.querySelector('.el-table__body-wrapper')
+    el.tableInfiniteScrollFn = function () {
+      if (
+        this.scrollHeight - this.scrollTop - parseInt(this.style.height) ===
+        0
+      ) {
+        binding.value()
+      }
+    }
+    tbody.addEventListener('scroll', el.tableInfiniteScrollFn)
+    tbody = undefined
+  },
+  unbind(el, binding) {
+    const tbody = el.querySelector('.el-table__body-wrapper')
+    tbody.removeEventListener('scroll', el.tableInfiniteScrollFn)
+    el.tableInfiniteScrollFn = undefined
+  }
+})
+
+// 定义全局指令
+Vue.directive('loadMore', {
+  // bind只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置
+  bind(el, binding) {
+    // 获取element-ui定义好的scroll盒子  Select 选择器的下拉盒子
+    const SELECTWRAP_DOM = el.querySelector(
+      '.el-select-dropdown .el-select-dropdown__wrap'
+    )
+    SELECTWRAP_DOM.addEventListener('scroll', function () {
+      // 判断滚动到底部
+      const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight
+      if (CONDITION) {
+        // binding.value 是指令的绑定值，该值可能是字符串，数字、函数
+        // binding.value() 表示执行 v-loadmore 绑定的函数
+        binding.value()
+      }
+    })
+  }
+})
+
+Vue.directive('init-scroll', {
+  inserted(el, binding) {
+    const tbody = el.querySelector('.el-table__body-wrapper')
+    const timer = null
+    tbody.onmouseenter = (e) => {
+      // 清除定时器
+      clearInterval(timer)
+    }
+    // 鼠标移出
+    tbody.onmouseleave = () => {
+      // 清除定时器
+      clearInterval(timer)
+    }
+
+    // this.timer = setInterval(() => {
+    //   if (wrapper.clientHeight + top > wrapper.scrollHeight) {
+    //     top = wrapper.scrollTop = 0
+    //   } else {
+    //     this.scrollTop = top += scrollTop
+    //     wrapper.scrollTo({
+    //       top,
+    //       behavior: 'smooth'
+    //     })
+    //   }
+    // }, speed)
+  },
+  // 指令与元素解绑时
+  unbind() {}
 })

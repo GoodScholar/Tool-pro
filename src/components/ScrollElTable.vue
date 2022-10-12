@@ -5,6 +5,7 @@
 -->
 <template>
   <div class="elTable">
+    <!--  :span-method="objectSpanMethod" -->
     <el-table
       :data="tableData"
       ref="table"
@@ -12,7 +13,6 @@
       :height="tableHeight"
       :header-cell-style="headerStyle"
       :cell-style="cellStyle"
-      :span-method="objectSpanMethod"
       @row-click="handleClickChange"
       @mouseenter.native="mouseEnter"
       @mouseleave.native="mouseLeave"
@@ -99,9 +99,9 @@ export default {
     autoScroll(speed, scrollTop = 48, currentTop = 0) {
       let top = currentTop
       const wrapper = this.$refs.table.bodyWrapper
-
+      // console.log(wrapper.clientHeight + top, wrapper.scrollHeight)
       this.timer = setInterval(() => {
-        if (wrapper.clientHeight + top >= wrapper.scrollHeight) {
+        if (wrapper.clientHeight + top > wrapper.scrollHeight) {
           top = wrapper.scrollTop = 0
         } else {
           this.scrollTop = top += scrollTop
@@ -141,23 +141,23 @@ export default {
           rows[index].style.backgroundColor = 'skyblue'
         }
       }
-    },
-    // 合并列和行
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      if (columnIndex === 0) {
-        if (rowIndex % this.interval === 0) {
-          return {
-            rowspan: this.interval,
-            colspan: 1
-          }
-        } else {
-          return {
-            rowspan: 0,
-            colspan: 0
-          }
-        }
-      }
     }
+    // 合并列和行
+    // objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+    //   if (columnIndex === 0) {
+    //     if (rowIndex % this.interval === 0) {
+    //       return {
+    //         rowspan: this.interval,
+    //         colspan: 1
+    //       }
+    //     } else {
+    //       return {
+    //         rowspan: 0,
+    //         colspan: 0
+    //       }
+    //     }
+    //   }
+    // }
   },
   created() {},
   mounted() {

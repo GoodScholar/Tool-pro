@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       // 全景图路径
-      bigImg: require('@/assets/img/view.jpg')
+      bigImg: require('@/assets/imgs/view.jpg')
     }
   },
   mounted() {

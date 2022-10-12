@@ -22,6 +22,11 @@ export default {
     },
     {
       icon: 'el-icon-menu',
+      name: '二次封装Element UI',
+      path: '/twoEn'
+    },
+    {
+      icon: 'el-icon-menu',
       name: '滚动表格（插件示例）',
       path: '/scroll'
     },
@@ -35,11 +40,7 @@ export default {
       name: '新增自定义表单',
       path: '/form'
     },
-    {
-      icon: 'el-icon-menu',
-      name: '弹窗自定义拖拽指令',
-      path: '/dialog'
-    },
+
     {
       icon: 'el-icon-menu',
       name: 'echarts的树型图',

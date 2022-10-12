@@ -5,6 +5,40 @@
 -->
 <template>
   <div class="elTable">
+    <div>
+      <span
+        v-showTips:[{width:400,height:400}]
+        style="width: 300px; display: block"
+      >
+        xxxxxxx11111111xxxxx
+      </span>
+    </div>
+    <hr />
+    <button v-drag>拖</button>
+    <hr />
+    <div
+      v-waterMarker="{
+        text: '水印指令',
+        textColor: 'red'
+      }"
+      style="width: 100%; height: 100px; background: pink"
+    ></div>
+    <hr />
+    <div>
+      <button v-debounce="debounceClick">防抖</button>
+    </div>
+    <hr />
+    <div v-zoom:{a:1,b:2}="{ width: 800, height: 1000 }">测试指令传参</div>
+    <hr />
+    <div>
+      <button v-copy="copyText">复制</button>
+    </div>
+    <hr />
+
+    <div>
+      <button v-longpress="longPress">长按</button>
+    </div>
+
     <div style="background-color: rgba(3, 22, 37, 0.85)">
       <ProgressBar v-for="(item, index) in dealList" :key="index" :obj="item" />
     </div>
@@ -20,9 +54,9 @@
     <div class="tables">
       <ScrollElTable
         :tableData="tableData"
-        :setHeight="480"
+        :setHeight="240"
         :isScroll="true"
-        :isStripe="true"
+        :isStripe="false"
         :headerStyle="headerStyle"
         :cellStyle="cellStyle"
       ></ScrollElTable>
@@ -45,80 +79,81 @@ export default {
   },
   data() {
     return {
+      copyText: 'a copy directives',
       codeUrl:
         'https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=6336620009a2e72bee6c06b9', // 后端返回的二维码地址
-      // tableData: [
-      //   {
-      //     id: '12987122',
-      //     name: '王小虎',
-      //     amount1: '234',
-      //     amount2: '3.2',
-      //     amount3: 10
-      //   },
-      //   {
-      //     id: '12987122',
-      //     name: '王小虎',
-      //     amount1: '2313',
-      //     amount2: '3.2',
-      //     amount3: 112
-      //   },
-      //   {
-      //     id: '12987122',
-      //     name: '王小虎',
-      //     amount1: '12334',
-      //     amount2: '3.2',
-      //     amount3: 11
-      //   },
-      //   {
-      //     id: '12987123',
-      //     name: '王小虎',
-      //     amount1: '165',
-      //     amount2: '4.43',
-      //     amount3: 12
-      //   },
-      //   {
-      //     id: '12987123',
-      //     name: '王小虎',
-      //     amount1: '165',
-      //     amount2: '4.43',
-      //     amount3: 12
-      //   },
-      //   {
-      //     id: '12987123',
-      //     name: '王小虎',
-      //     amount1: '165',
-      //     amount2: '4.43',
-      //     amount3: 12
-      //   },
-      //   {
-      //     id: '12987124',
-      //     name: '王小虎',
-      //     amount1: '324',
-      //     amount2: '1.9',
-      //     amount3: 9
-      //   },
-      //   {
-      //     id: '12987124',
-      //     name: '王小虎',
-      //     amount1: '324',
-      //     amount2: '1.9',·
-      //     amount3: 9
-      //   },
-      //   {
-      //     id: '12987125',
-      //     name: '王小虎',
-      //     amount1: '621',
-      //     amount2: '2.2',
-      //     amount3: 17
-      //   },
-      //   {
-      //     id: '12987126',
-      //     name: '王小虎',
-      //     amount1: '539',
-      //     amount2: '4.1',
-      //     amount3: 15
-      //   }
-      // ],
+      tableData: [
+        {
+          id: '12987122',
+          name: '王小虎1',
+          amount1: '234',
+          amount2: '3.2',
+          amount3: 10
+        },
+        {
+          id: '12987122',
+          name: '王小虎2',
+          amount1: '2313',
+          amount2: '3.2',
+          amount3: 112
+        },
+        {
+          id: '12987122',
+          name: '王小虎3',
+          amount1: '12334',
+          amount2: '3.2',
+          amount3: 11
+        },
+        {
+          id: '12987123',
+          name: '王小虎4',
+          amount1: '165',
+          amount2: '4.43',
+          amount3: 12
+        },
+        {
+          id: '129871235',
+          name: '王小虎5',
+          amount1: '165',
+          amount2: '4.43',
+          amount3: 12
+        },
+        {
+          id: '12987123',
+          name: '王小虎6',
+          amount1: '165',
+          amount2: '4.43',
+          amount3: 12
+        },
+        {
+          id: '12987124',
+          name: '王小虎7',
+          amount1: '324',
+          amount2: '1.9',
+          amount3: 9
+        },
+        {
+          id: '12987124',
+          name: '王小虎8',
+          amount1: '324',
+          amount2: '1.9',
+          amount3: 9
+        },
+        {
+          id: '12987125',
+          name: '王小虎9',
+          amount1: '621',
+          amount2: '2.2',
+          amount3: 17
+        },
+        {
+          id: '12987126',
+          name: '王小虎10',
+          amount1: '539',
+          amount2: '4.1',
+          amount3: 15
+        }
+      ],
       // tableData: [
       //   {
       //     date: '2016-05-02',
@@ -203,122 +238,122 @@ export default {
         // fontSize: '14px',
         // color: '#fff'
       },
-      tableData: [
-        {
-          name: '城乡镇',
-          children: [
-            {
-              year: '2020',
-              children: [
-                {
-                  desc1: '1'
-                },
-                {
-                  desc1: '11'
-                }
-              ]
-            },
-            {
-              year: '2021',
-              children: [
-                {
-                  desc: '2'
-                },
-                {
-                  desc: '22'
-                }
-              ]
-            },
-            {
-              year: '2022',
-              children: [
-                {
-                  desc: '3'
-                },
-                {
-                  desc: '33'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          name: '浏河镇',
-          children: [
-            {
-              year: '2020',
-              children: [
-                {
-                  desc: '1'
-                },
-                {
-                  desc: '11'
-                }
-              ]
-            },
-            {
-              year: '2021',
-              children: [
-                {
-                  desc: '2'
-                },
-                {
-                  desc: '22'
-                }
-              ]
-            },
-            {
-              year: '2022',
-              children: [
-                {
-                  desc: '3'
-                },
-                {
-                  desc: '33'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          name: '沙溪镇',
-          children: [
-            {
-              year: '2020',
-              children: [
-                {
-                  desc: '1'
-                },
-                {
-                  desc: '11'
-                }
-              ]
-            },
-            {
-              year: '2021',
-              children: [
-                {
-                  desc: '2'
-                },
-                {
-                  desc: '22'
-                }
-              ]
-            },
-            {
-              year: '2022',
-              children: [
-                {
-                  desc: '3'
-                },
-                {
-                  desc: '33'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      // tableData: [
+      //   {
+      //     name: '城乡镇',
+      //     children: [
+      //       {
+      //         year: '2020',
+      //         children: [
+      //           {
+      //             desc1: '1'
+      //           },
+      //           {
+      //             desc1: '11'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2021',
+      //         children: [
+      //           {
+      //             desc: '2'
+      //           },
+      //           {
+      //             desc: '22'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2022',
+      //         children: [
+      //           {
+      //             desc: '3'
+      //           },
+      //           {
+      //             desc: '33'
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     name: '浏河镇',
+      //     children: [
+      //       {
+      //         year: '2020',
+      //         children: [
+      //           {
+      //             desc: '1'
+      //           },
+      //           {
+      //             desc: '11'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2021',
+      //         children: [
+      //           {
+      //             desc: '2'
+      //           },
+      //           {
+      //             desc: '22'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2022',
+      //         children: [
+      //           {
+      //             desc: '3'
+      //           },
+      //           {
+      //             desc: '33'
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     name: '沙溪镇',
+      //     children: [
+      //       {
+      //         year: '2020',
+      //         children: [
+      //           {
+      //             desc: '1'
+      //           },
+      //           {
+      //             desc: '11'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2021',
+      //         children: [
+      //           {
+      //             desc: '2'
+      //           },
+      //           {
+      //             desc: '22'
+      //           }
+      //         ]
+      //       },
+      //       {
+      //         year: '2022',
+      //         children: [
+      //           {
+      //             desc: '3'
+      //           },
+      //           {
+      //             desc: '33'
+      //           }
+      //         ]
+      //       }
+      //     ]
+      //   }
+      // ],
       newObj: {},
       newArr: [],
       obj: {},
@@ -340,6 +375,9 @@ export default {
   },
   computed: {},
   methods: {
+    debounceClick() {
+      console.log('只触发一次')
+    },
     // 树形数据转为一维数组
     flatArray(list) {
       return list.reduce((res, v) => {
@@ -362,6 +400,9 @@ export default {
       // 这里要 处理list数据，将value都处理成100以内的数，防止进度条超过100，处理的步骤就不写了
       // 这里就直接把list里的数据当处理好了，放到dealList中
       this.dealList = this.list
+    },
+    longPress() {
+      console.log('长按事件')
     }
   },
   created() {},
