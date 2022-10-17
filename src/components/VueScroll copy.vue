@@ -67,9 +67,7 @@ export default {
       width: 0, // 外容器宽度
       realBoxWidth: 0, // 内容实际宽度,
       // 计数
-      num: 0,
-      yNum: 0,
-      slotList: null
+      num: 0
     }
   },
   watch: {
@@ -80,8 +78,8 @@ export default {
       //   this.reset()
       // }
     },
-    autoPlay(newVal) {
-      if (newVal) {
+    autoPlay(bol) {
+      if (bol) {
         this.reset()
       } else {
         this._stopMove()
@@ -124,7 +122,8 @@ export default {
     },
     pos() {
       return {
-        transform: `translate(${this.xPos}px,${this.yPos}px)`,
+        // transform: `translate(${this.xPos}px,${this.yPos}px)`,
+        transform: `translate(${this.xPos}px,0px)`,
         transition: `all ${this.ease} ${this.delay}ms`,
         overflow: 'hidden'
       }
@@ -359,6 +358,7 @@ export default {
             } else {
               this._move()
               this.num += 1
+              console.log(this.num)
               if (this.num === 47) {
                 this.$emit('changeCurrentData')
                 this.num = 0
@@ -439,7 +439,6 @@ export default {
     }
   },
   mounted() {
-    this.slotList = this.$refs.slotList
     this._initMove()
   },
   beforeCreate() {

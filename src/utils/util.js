@@ -159,6 +159,39 @@ export default {
           .replace(/\s+/g, '')
           .replace(/<\/?.+?>/g, '')
           .replace(/[\r\n]/g, '')
+      },
+      /**
+       * 过渡函数
+       * @param {Object} param0 a: 开始数字；b：过渡最后的数字；time：毫秒；change：过渡回调；type：【可选】（clockwise）只过渡顺时针、（anticlockwise）只过渡逆时针，默认全过渡
+       */
+      transition({ start, end, time, change, type }) {
+        const c = start - end
+        // 频率
+        const p = 10
+        // 执行次数(毫秒)， 常量
+        const n = time / p
+
+        // 执行次数变量
+        const nI = 0
+        const loop = (nI) => {
+          // 进度
+          const r = (1 / n) * nI
+          const nextValue = start - c * (1 - r)
+          change(nextValue)
+          if (nI < n) {
+            setTimeout(() => {
+              loop(nI + 1)
+            }, p)
+          }
+        }
+        if (
+          (type === 'clockwise' && c < 0) ||
+          (type === 'anticlockwise' && c > 0)
+        ) {
+          change(start)
+          return
+        }
+        loop(nI)
       }
     }
   }

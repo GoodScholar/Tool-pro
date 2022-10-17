@@ -14,14 +14,15 @@
     </div>
 
     <div class="scrollBox">
-      <VueScroll :data="listData" :class-option="optionHover" class="warp">
-        <el-table
-          :data="listData"
-          border
-          :show-header="status"
-          :header-cell-style="headerStyle"
-          :cell-style="cellStyle"
-        >
+      <!-- :header-cell-style="headerStyle"
+          :cell-style="cellStyle" -->
+      <VueScroll
+        :data="listData"
+        :class-option="optionHover"
+        class="warp"
+        @changeCurrentData="changeCurrentData"
+      >
+        <el-table :data="listData" border :show-header="status">
           <el-table-column prop="date" label="日期"></el-table-column>
           <el-table-column prop="title" label="姓名"></el-table-column>
           <el-table-column prop="test" label="地址"></el-table-column>
@@ -38,18 +39,18 @@ export default {
   data() {
     return {
       status: false,
-      headerStyle: {
-        backgroundColor: 'transparent',
-        color: '#00F6FF',
-        fontSize: '12px',
-        borderColor: 'transparent'
-      },
-      cellStyle: {
-        backgroundColor: 'transparent',
-        borderColor: '#fff',
-        fontSize: '14px',
-        color: '#fff'
-      },
+      // headerStyle: {
+      //   backgroundColor: 'transparent',
+      //   color: '#00F6FF',
+      //   fontSize: '12px',
+      //   borderColor: 'transparent'
+      // },
+      // cellStyle: {
+      //   backgroundColor: 'transparent',
+      //   borderColor: '#fff',
+      //   fontSize: '14px',
+      //   color: '#fff'
+      // },
       listData: [
         {
           title: '无缝滚动第一行无缝滚动第一行',
@@ -121,20 +122,35 @@ export default {
           test: '测试',
           test2: '测试2',
           test3: '测试3'
+        },
+        {
+          title: '无缝滚动第七行无缝滚动第十一行',
+          date: '2017-12-16',
+          test: '测试',
+          test2: '测试2',
+          test3: '测试3'
         }
-      ]
+      ],
+      num: 0
     }
   },
   computed: {
     optionHover() {
       return {
-        step: 1, // 数值越大速度滚动越快
+        autoPlay: true,
+        step: 1, // 数值越大速度滚动越快 控制平滑滚动
         limitMoveNum: this.listData.length, // 开始无缝滚动的数据量 this.dataList.length
         hoverStop: true, // 是否开启鼠标悬停stop
         direction: 1, // 0向下 1向上 2向左 3向右
         singleHeight: 48, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
-        waitTime: 1000 // 单步运动停止的时间(默认值1000ms)
+        waitTime: 3000 // 单步运动停止的时间(默认值1000ms)
       }
+    }
+  },
+  methods: {
+    // 获取
+    changeCurrentData() {
+      console.log('123')
     }
   }
 }
@@ -158,12 +174,12 @@ export default {
       margin: 0 auto;
       overflow: hidden;
 
-      .el-table,
-      .el-table__expanded-cell,
-      .el-table th,
-      .el-table tr {
-        background-color: rgba(7, 26, 36, 0.2);
-      }
+      // .el-table,
+      // .el-table__expanded-cell,
+      // .el-table th,
+      // .el-table tr {
+      //   background-color: rgba(7, 26, 36, 0.2);
+      // }
     }
   }
 }

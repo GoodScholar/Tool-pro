@@ -6,11 +6,8 @@
 <template>
   <div class="elTable">
     <div>
-      <span
-        v-showTips:[{width:400,height:400}]
-        style="width: 300px; display: block"
-      >
-        xxxxxxx11111111xxxxx
+      <span v-showTips:[toolTipObj] style="width: 300px; display: block">
+        xxxxxxx11111111xxxxx111111111111111
       </span>
     </div>
     <hr />
@@ -57,10 +54,27 @@
         :setHeight="240"
         :isScroll="true"
         :isStripe="false"
+        :speed="3"
         :headerStyle="headerStyle"
         :cellStyle="cellStyle"
       ></ScrollElTable>
     </div>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="centerDialogVisible"
+      :fullscreen="fullscreen"
+      center
+    >
+      <!-- <office-preview
+        :visible.sync="previewVisible"
+        :client-height="clientHeight"
+        :file="previewFile"
+        :base-u-r-l="officeURL"
+      ></office-preview> -->
+    </el-dialog>
+
+    <!-- <iframe :src="'https://docs.google.com/viewer?url="fileurl"></iframe> -->
   </div>
 </template>
 
@@ -68,6 +82,9 @@
 import ScrollElTable from '../components/ScrollElTable.vue'
 import ProgressBar from '@/components/comGradientProgressBar'
 import QrCode from '@/components/qrCode.vue'
+// import officePreview from '@/components/officePreview'
+
+// https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=61555905a905b7462ce2121e
 
 export default {
   name: 'TestItem',
@@ -76,156 +93,24 @@ export default {
     ScrollElTable,
     QrCode,
     ProgressBar
+    // officePreview
   },
   data() {
     return {
+      fullscreen: false,
+      centerDialogVisible: false,
+      toolTipObj: {
+        width: 400,
+        height: 400,
+        bgc: 'rgba(0,0,0,1)',
+        color: 'red',
+        fontSize: 13
+      },
       copyText: 'a copy directives',
       codeUrl:
         'https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=6336620009a2e72bee6c06b9', // 后端返回的二维码地址
-      tableData: [
-        {
-          id: '12987122',
-          name: '王小虎1',
-          amount1: '234',
-          amount2: '3.2',
-          amount3: 10
-        },
-        {
-          id: '12987122',
-          name: '王小虎2',
-          amount1: '2313',
-          amount2: '3.2',
-          amount3: 112
-        },
-        {
-          id: '12987122',
-          name: '王小虎3',
-          amount1: '12334',
-          amount2: '3.2',
-          amount3: 11
-        },
-        {
-          id: '12987123',
-          name: '王小虎4',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        },
-        {
-          id: '129871235',
-          name: '王小虎5',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        },
-        {
-          id: '12987123',
-          name: '王小虎6',
-          amount1: '165',
-          amount2: '4.43',
-          amount3: 12
-        },
-        {
-          id: '12987124',
-          name: '王小虎7',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        },
-        {
-          id: '12987124',
-          name: '王小虎8',
-          amount1: '324',
-          amount2: '1.9',
-          amount3: 9
-        },
-        {
-          id: '12987125',
-          name: '王小虎9',
-          amount1: '621',
-          amount2: '2.2',
-          amount3: 17
-        },
-        {
-          id: '12987126',
-          name: '王小虎10',
-          amount1: '539',
-          amount2: '4.1',
-          amount3: 15
-        }
-      ],
-      // tableData: [
-      //   {
-      //     date: '2016-05-02',
-      //     name: '王小虎1',
-      //     address: '上海市普陀区金沙江路 1518 弄'
-      //   },
-      //   {
-      //     date: '2016-05-04',
-      //     name: '王小虎2',
-      //     address: '上海市普陀区金沙江路 1517 弄'
-      //   },
-      //   {
-      //     date: '2016-05-01',
-      //     name: '王小虎3',
-      //     address: '上海市普陀区金沙江路 1519 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎4',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎5',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎6',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎7',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎8',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎9',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎10',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎11',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎12',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎13',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   },
-      //   {
-      //     date: '2016-05-03',
-      //     name: '王小虎14',
-      //     address: '上海市普陀区金沙江路 1516 弄'
-      //   }
-      // ],
+      tableData: [],
+
       headerStyle: {
         // backgroundColor: 'rgba(7, 26, 36, 0.2)',
         // color: '#00F6FF',
@@ -363,6 +248,8 @@ export default {
         { id: '001', value: 90, status: '完成' }
       ],
       dealList: []
+
+      // 'https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=61555905a905b7462ce2121e' // 文件地址，看你对应怎末获取、赋值
     }
   },
   watch: {
@@ -407,9 +294,26 @@ export default {
   },
   created() {},
   mounted() {
-    this.tableData = this.flatArray(this.tableData)
+    for (let i = 1; i <= 100; i++) {
+      this.tableData.push({
+        id: '12987122',
+        name: `王小虎${i}`,
+        amount1: '234',
+        amount2: '3.2',
+        amount3: 10
+      })
+    }
+    // (this.tableData = this.flatArray(this.tableData))
 
     this.dealData()
+
+    this.$utils.transition({
+      start: 0,
+      end: 100,
+      type: 'anticlockwise',
+      time: '',
+      change: () => {}
+    })
   }
 }
 </script>

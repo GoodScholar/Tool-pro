@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import Preview from '@/components/ImagePreview/index.js'
+
 // 导入按钮组件、表单组件、输入框组件、弹框提示组件message
 import {
   Button,
@@ -95,6 +97,9 @@ Vue.use(MenuItemGroup)
 Vue.use(Progress)
 Vue.use(InputNumber)
 Vue.use(DatePicker)
+
+// 图片预览组件
+Vue.use(Preview)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

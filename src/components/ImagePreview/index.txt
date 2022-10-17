@@ -1,0 +1,52 @@
+<template>
+  <div>
+    <el-image-viewer ref="elImageViewer" v-bind="$attrs" v-on="$listeners" />
+  </div>
+</template>
+
+<script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+
+export default {
+  name: 'ImagePreview',
+  components: { ElImageViewer },
+  props: {
+    // 点击mask是否隐藏大图
+    maskHide: {
+      type: Boolean,
+      default: true
+    }
+  },
+  methods: {
+    addHideToMask() {
+      this.$viewer = this.$refs.elImageViewer
+      if (this.$viewer) {
+        // 获取遮罩层元素
+        const mask = this.$viewer.$el.querySelector('.el-image-viewer__mask')
+        if (mask) {
+          // 遮罩层增加点击事件，关闭预览
+          mask.addEventListener('click', this.hide)
+          // hook卸载事件，移除之前添加在mask元素的事件
+          this.$once('hook:beforeMount', () => {
+            mask && mask.removeEventListener('click', this.hide)
+          })
+        }
+      }
+    },
+    hide() {
+      this.$viewer && this.$viewer.hide()
+    }
+  },
+  mounted() {
+    if (this.maskHide) {
+      this.addHideToMask()
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+// ::v-deep .el-image-viewer__btn.el-image-viewer__close {
+//   color: #fff;
+// }
+</style>

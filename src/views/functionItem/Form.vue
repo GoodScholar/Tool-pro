@@ -118,6 +118,7 @@ export default {
   components: {},
   data() {
     return {
+      labelPosition: 'left',
       form: {
         goods_type: '',
         purchase_list: [
@@ -151,7 +152,22 @@ export default {
         approve_person: [
           { required: true, message: '请选择审批人', trigger: 'change' }
         ]
-      }
+      },
+      approveOptions: [
+        {
+          PersonId: 1,
+          Name: '张三'
+        },
+        {
+          PersonId: 2,
+          Name: '李四'
+        },
+        {
+          PersonId: 3,
+          Name: '王五'
+        }
+      ],
+      typeOptions: []
     }
   },
   watch: {},
@@ -171,7 +187,8 @@ export default {
       if (index !== -1) {
         this.form.purchase_list.splice(index, 1)
       }
-    }
+    },
+    queryApprove() {}
   },
   created() {},
   mounted() {}

@@ -405,7 +405,22 @@ function addWaterMarker(str, parentNode, font, textColor) {
 // 实现文字溢出显示，鼠标移入浮层展示全部 指令
 Vue.directive('showTips', {
   inserted(el, binding) {
-    const { width, height } = binding.arg
+    // console.log(width, height, bgc,color,fontSize)
+    let widths = 400
+    let heights = 400
+    let backgrounds = 'rgba(0, 0, 0, 0.5)'
+    let colors = '#fff'
+    let fontSizes = 12
+
+    if (binding.arg) {
+      const { width, height, bgc, color, fontSize } = binding.arg
+
+      widths = width
+      heights = height
+      backgrounds = bgc
+      colors = color
+      fontSizes = fontSize
+    }
 
     const curStyle = window.getComputedStyle(el, '') // 获取当前元素的style
     const textSpan = document.createElement('span') // 创建一个容器来记录文字的width
@@ -433,13 +448,13 @@ Vue.directive('showTips', {
             position: absolute;
             top: ${e.clientY + 9}px;
             left: ${e.clientX}px;
-            max-width: ${width}px;
-            max-height:${height}px;
-            background: rgba(0, 0 , 0, .6);
-            color: #fff;
-            font-size: 12px;
+            max-width: ${widths}px;
+            max-height:${heights}px;
+            background: ${backgrounds};
+            color: ${colors};
+            font-size: ${fontSizes}px;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 6px;
             word-wrap: break-word;
             z-index: 9999
           `

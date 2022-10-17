@@ -7,13 +7,13 @@
   <div class="elTable">
     <!--  :span-method="objectSpanMethod" -->
     <el-table
-      :data="tableData"
+      :data="scrollArr"
       ref="table"
       style="width: 100%"
       :height="tableHeight"
       :header-cell-style="headerStyle"
       :cell-style="cellStyle"
-      @row-click="handleClickChange"
+      @cell-click="handleClickChange"
       @mouseenter.native="mouseEnter"
       @mouseleave.native="mouseLeave"
     >
@@ -21,10 +21,6 @@
       <el-table-column prop="amount1" label="数值 1（元）"></el-table-column>
       <el-table-column prop="amount2" label="数值 2（元）"></el-table-column>
       <el-table-column prop="amount3" label="数值 3（元）"></el-table-column>
-      <template slot="empty">
-        <span class="noData">暂无数据</span>
-        <!-- <el-empty description="暂无数据"></el-empty> -->
-      </template>
     </el-table>
   </div>
 </template>
@@ -64,10 +60,10 @@ export default {
       type: Boolean,
       default: false
     },
-    // 表格的滚动速度
+    //  滚动时间
     speed: {
       type: Number,
-      default: 1
+      default: 1000
     },
     // 斑马纹的间隔
     interval: {
@@ -88,11 +84,18 @@ export default {
       scrollTop: 0,
       // 定时器
       timer: null,
-      // 滚动时间
-      scrollSpeed: this.speed * 1000
+      scrollArr: []
     }
   },
-  watch: {},
+  watch: {
+    tableData: {
+      handler(newVal) {
+        this.scrollArr = newVal
+      },
+      immediate: true,
+      deep: true
+    }
+  },
   computed: {},
   methods: {
     // 自动循环播放
@@ -100,15 +103,18 @@ export default {
       let top = currentTop
       const wrapper = this.$refs.table.bodyWrapper
       // console.log(wrapper.clientHeight + top, wrapper.scrollHeight)
-      this.timer = setInterval(() => {
-        if (wrapper.clientHeight + top > wrapper.scrollHeight) {
+      this.timer = setInterval(async () => {
+        if (wrapper.clientHeight + top >= wrapper.scrollHeight) {
           top = wrapper.scrollTop = 0
         } else {
           this.scrollTop = top += scrollTop
+
           wrapper.scrollTo({
             top,
             behavior: 'smooth'
           })
+
+          // this.scrollArr.push(this.scrollArr.shift())
         }
       }, speed)
     },
@@ -123,7 +129,7 @@ export default {
 
       if (this.isScroll && this.tableData.length > 6) {
         // 开始滚动table
-        this.autoScroll(this.scrollSpeed, this.scrollHeight, this.scrollTop)
+        this.autoScroll(this.speed, this.scrollHeight, this.scrollTop)
       }
     },
     // 行点击事件
@@ -141,7 +147,7 @@ export default {
           rows[index].style.backgroundColor = 'skyblue'
         }
       }
-    }
+    },
     // 合并列和行
     // objectSpanMethod({ row, column, rowIndex, columnIndex }) {
     //   if (columnIndex === 0) {
@@ -158,6 +164,25 @@ export default {
     //     }
     //   }
     // }
+    slideTo(targetPageY) {
+      const timer = setInterval(function () {
+        const currentY =
+          document.documentElement.scrollTop || document.body.scrollTop // 当前及滑动中任意时刻位置
+        const distance =
+          targetPageY > currentY
+            ? targetPageY - currentY
+            : currentY - targetPageY // 剩余距离
+        const speed = Math.ceil(distance / 10) // 每时刻速度
+        if (currentY === targetPageY) {
+          clearInterval(timer)
+        } else {
+          window.scrollTo(
+            0,
+            targetPageY > currentY ? currentY + speed : currentY - speed
+          )
+        }
+      }, 10)
+    }
   },
   created() {},
   mounted() {
@@ -166,7 +191,7 @@ export default {
 
     if (this.isScroll && this.tableData.length > 6) {
       // 开始滚动table
-      this.autoScroll(this.scrollSpeed)
+      this.autoScroll(this.speed)
     }
 
     this.tableRowClassName()
@@ -212,7 +237,8 @@ export default {
   .el-table__empty-block {
     height: 50px !important;
   }
-  .noData {
+
+  .el-table__empty-text {
     text-align: center;
     color: #1988f7;
   }
