@@ -85,6 +85,11 @@ export default {
       icon: 'el-icon-menu',
       name: '测试',
       path: '/test'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: '录像',
+      path: '/video'
     }
   ]
 }

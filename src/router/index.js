@@ -136,6 +136,17 @@ const routes = [
         }
       },
       {
+        path: 'video',
+        name: 'video',
+        component: () =>
+          import(
+            /* webpackChunkName: "Panorama" */ '../views/functionItem/vedio.vue'
+          ),
+        meta: {
+          title: '登录页面！'
+        }
+      },
+      {
         path: 'test',
         name: 'Test',
         component: () =>

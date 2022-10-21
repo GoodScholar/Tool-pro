@@ -5,14 +5,36 @@
 -->
 <template>
   <div class="elTable">
+    <h3>数字累加动画</h3>
     <div>
-      <span v-showTips:[toolTipObj] style="width: 300px; display: block">
-        xxxxxxx11111111xxxxx111111111111111
-      </span>
+      <!-- <span>{{ num }}</span> -->
+      <span v-count="{ interval: 10, end: 200 }"></span>
     </div>
+
     <hr />
+    <h3>提示框指令</h3>
+    <div>
+      <div v-showTips:[toolTipObj] style="width: 300px">
+        xxxxxxx11111111xxxxx111111111111111
+      </div>
+      <br />
+      <div v-ellipsis:200>啊肯定会卡号撒旦拉萨啊十大建设的爱神的箭啦设计的</div>
+    </div>
+
+    <!-- <hr />
+    <h3>缩放指令</h3>
+    <div v-resize="400">13123</div> -->
+
+    <hr />
+    <h3>拖拽指令</h3>
     <button v-drag>拖</button>
+
     <hr />
+    <h3>字符串整形指令</h3>
+    <div v-format:[2].toFixed.price="123333">123</div>
+
+    <hr />
+    <h3>水印指令</h3>
     <div
       v-waterMarker="{
         text: '水印指令',
@@ -21,27 +43,42 @@
       style="width: 100%; height: 100px; background: pink"
     ></div>
     <hr />
+
     <div>
-      <button v-debounce="debounceClick">防抖</button>
+      <h3>防抖指令</h3>
+      <button v-debounce:[1000]="debounceClick">防抖</button>
     </div>
     <hr />
-    <div v-zoom:{a:1,b:2}="{ width: 800, height: 1000 }">测试指令传参</div>
-    <hr />
-    <div>
-      <button v-copy="copyText">复制</button>
+
+    <div v-zoom:{a:1,b:2}="{ width: 800, height: 1000 }">
+      <h3>测试传参指令</h3>
+      测试指令传参
     </div>
     <hr />
 
     <div>
+      <h3>复制指令</h3>
+      <button v-copy="copyText">复制</button>
+
+      <button v-copy>单击复制</button>
+      <button v-copy.dblclick>双击复制</button>
+      <button v-copy.icon>icon复制</button>
+    </div>
+    <hr />
+
+    <div>
+      <h3>长按指令</h3>
       <button v-longpress="longPress">长按</button>
     </div>
 
     <div style="background-color: rgba(3, 22, 37, 0.85)">
       <ProgressBar v-for="(item, index) in dealList" :key="index" :obj="item" />
     </div>
+
     <a class="button">
       <div>click me</div>
     </a>
+
     <div style="text-align: center">
       <QrCode :id="'QrCode'" :text="codeUrl" />
     </div>
@@ -65,16 +102,7 @@
       :visible.sync="centerDialogVisible"
       :fullscreen="fullscreen"
       center
-    >
-      <!-- <office-preview
-        :visible.sync="previewVisible"
-        :client-height="clientHeight"
-        :file="previewFile"
-        :base-u-r-l="officeURL"
-      ></office-preview> -->
-    </el-dialog>
-
-    <!-- <iframe :src="'https://docs.google.com/viewer?url="fileurl"></iframe> -->
+    ></el-dialog>
   </div>
 </template>
 
@@ -82,6 +110,8 @@
 import ScrollElTable from '../components/ScrollElTable.vue'
 import ProgressBar from '@/components/comGradientProgressBar'
 import QrCode from '@/components/qrCode.vue'
+
+import Count from '@/utils/count'
 // import officePreview from '@/components/officePreview'
 
 // https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=61555905a905b7462ce2121e
@@ -247,7 +277,8 @@ export default {
         { id: '001', value: 68, status: '失败' },
         { id: '001', value: 90, status: '完成' }
       ],
-      dealList: []
+      dealList: [],
+      num: 0
 
       // 'https://zwfw.taicang.gov.cn/allinone-power/api/attachment/download?fileId=61555905a905b7462ce2121e' // 文件地址，看你对应怎末获取、赋值
     }
@@ -294,6 +325,25 @@ export default {
   },
   created() {},
   mounted() {
+    // todo 在指定时间内完成动效
+    // Count({
+    //   end: 100, // 结束时间
+    //   limitTime: 20000, // 指定时间
+    //   callback: (num) => {
+    //     this.num = num
+    //   }
+    // })
+
+    // todo 按指定速度完成动效
+    Count({
+      end: 100, // 结束数字
+      interval: 10, // 指定速度
+      callback: (num) => {
+        this.num = num
+      }
+    })
+
+    // 赋值
     for (let i = 1; i <= 100; i++) {
       this.tableData.push({
         id: '12987122',
@@ -306,14 +356,6 @@ export default {
     // (this.tableData = this.flatArray(this.tableData))
 
     this.dealData()
-
-    this.$utils.transition({
-      start: 0,
-      end: 100,
-      type: 'anticlockwise',
-      time: '',
-      change: () => {}
-    })
   }
 }
 </script>

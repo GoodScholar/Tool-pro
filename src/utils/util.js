@@ -138,20 +138,6 @@ export default {
           )
         })
       },
-      // 防抖
-      debounce(fn, delay) {
-        let timer = null // 用于保存定时器
-        return () => {
-          // 如果timer存在 就清除定时器，重新计时
-          if (timer) {
-            clearTimeout(timer)
-          }
-          // 设置定时器，规定时间后执行真实要执行的函数
-          timer = setTimeout(() => {
-            fn.apply(this)
-          }, delay)
-        }
-      },
       // 清除空格和换行
       clearBr(str = '') {
         if (str.length === 0) return ''
@@ -160,39 +146,93 @@ export default {
           .replace(/<\/?.+?>/g, '')
           .replace(/[\r\n]/g, '')
       },
-      /**
-       * 过渡函数
-       * @param {Object} param0 a: 开始数字；b：过渡最后的数字；time：毫秒；change：过渡回调；type：【可选】（clockwise）只过渡顺时针、（anticlockwise）只过渡逆时针，默认全过渡
-       */
-      transition({ start, end, time, change, type }) {
-        const c = start - end
-        // 频率
-        const p = 10
-        // 执行次数(毫秒)， 常量
-        const n = time / p
+      // 过滤html代码(把<>转换)
+      filterTag(str) {
+        str = str.replace(/&/gi, '&')
+        str = str.replace(/</gi, '<')
+        str = str.replace(/>/gi, '>')
+        str = str.replace(' ', ' ')
+        return str
+      },
+      // 生成随机数范围
+      random(min, max) {
+        if (arguments.length === 2) {
+          return Math.floor(min + Math.random() * (max + 1 - min))
+        } else {
+          return null
+        }
+      },
 
-        // 执行次数变量
-        const nI = 0
-        const loop = (nI) => {
-          // 进度
-          const r = (1 / n) * nI
-          const nextValue = start - c * (1 - r)
-          change(nextValue)
-          if (nI < n) {
-            setTimeout(() => {
-              loop(nI + 1)
-            }, p)
+      // 返回当前的时间（年月日时分秒）
+      getDateTime() {
+        const date = new Date()
+        const year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        let hour = date.getHours() + 1
+        let minute = date.getMinutes()
+        let second = date.getSeconds()
+        month = checkTime(month)
+        day = checkTime(day)
+        hour = checkTime(hour)
+        minute = checkTime(minute)
+        second = checkTime(second)
+        function checkTime(i) {
+          if (i < 10) {
+            i = '0' + i
+          }
+          return i
+        }
+        return (
+          '' +
+          year +
+          '年' +
+          month +
+          '月' +
+          day +
+          '日' +
+          hour +
+          '时' +
+          minute +
+          '分' +
+          second +
+          '秒'
+        )
+      },
+      // 快排
+      quickArr(arr) {
+        if (arr.length <= 1) {
+          return arr
+        }
+        const left = []
+        const right = []
+        const pIndex = Math.floor(arr.length / 2)
+        const p = arr.splice(pIndex, 1)[0]
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i] <= p) {
+            left.push(arr[i])
+          } else {
+            right.push(arr[i])
           }
         }
-        if (
-          (type === 'clockwise' && c < 0) ||
-          (type === 'anticlockwise' && c > 0)
-        ) {
-          change(start)
-          return
+        // 递归
+        return this.quickArr(left).concat([p], this.quickArr(right))
+      },
+      // 冒泡
+      bubbleSort(arr) {
+        for (let i = 0; i < arr.length - 1; i++) {
+          for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] > arr[j]) {
+              const temp = arr[i]
+              arr[i] = arr[j]
+              arr[j] = temp
+            }
+          }
         }
-        loop(nI)
+        return arr
       }
+
+      // 深拷贝
     }
   }
 }
