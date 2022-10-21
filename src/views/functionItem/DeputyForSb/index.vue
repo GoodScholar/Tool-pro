@@ -7,12 +7,12 @@
 <template>
     <div>
         <div class="video-check">
-            <div class="video-check__cover" v-if="!currentVideoStream">
+            <div class="video-check__cover" v-if="showDefault">
                 <span class="video-check__cover-msg">摄像头开启录像</span>
             </div>
 
             <img
-                v-else
+                ref="imgPreview"
                 :src="currentVideoStream"
                 alt=""
                 class="video-check__cover"
@@ -75,8 +75,7 @@ export default {
     name: 'KeepCheck',
     data() {
         return {
-            // 0 表示默认显示 1 表示显示录制 2 表示预览
-            showCurrent: 0,
+            showDefault: true,
             agree: false,
             chunks: [],
             currentVideoStream: null,
@@ -104,6 +103,7 @@ export default {
         // 开启和关闭录制
         handleRecordVideo() {
             if (this.btnText === '开始录制') {
+                this.showDefault = false
                 this.onRecordStart()
             } else {
                 // this.showVideo(false)
@@ -134,10 +134,8 @@ export default {
         showVideo(bShow) {
             if (bShow) {
                 this.video.style.display = 'block'
-                // this.canvas.style.display = 'none'
             } else {
                 this.video.style.display = 'none'
-                // this.canvas.style.display = 'block'
                 this.video.pause()
             }
         },
@@ -152,6 +150,9 @@ export default {
 
         onPlay() {
             this.showVideo(true)
+
+            this.canvas.style.display = 'none'
+
             // this.video.src = this.currentVideoStream
             this.video.muted = false
             this.video.play()
@@ -162,6 +163,8 @@ export default {
         bindAudioEvent() {
             this.video.onended = () => {
                 this.showVideo(false)
+
+                this.canvas.style.display = 'block'
             }
         },
 
@@ -230,6 +233,10 @@ export default {
         this.video = this.$refs.video
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
+
+        this.imgPreview = this.$refs.imgPreview
+        this.imgPreview.style.display = 'none'
+
         this.requestAudioAccess()
     }
 }
