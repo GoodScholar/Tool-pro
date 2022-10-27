@@ -5,6 +5,38 @@
 -->
 <template>
   <div class="elTable">
+    <h3>边框进度条</h3>
+
+    <div>
+      <circleProcess
+        :start-time="10"
+        :step="-1"
+        :thresholds="[
+          { color: '#FF9370', threshold: 0.5 },
+          { color: '#FF1100', threshold: 0.25 }
+        ]"
+      />
+    </div>
+
+    <h3>边框进度条</h3>
+
+    <div class="svg__cell">
+      <svg>
+        <circle
+          class="circle"
+          cx="80"
+          cy="80"
+          r="50"
+          transform="rotate(-90 80 80)"
+        ></circle>
+
+        <text x="80" y="85" fill="#6b778c" text-anchor="middle">
+          <tspan class="text">0</tspan>
+          <tspan class="percent">%</tspan>
+        </text>
+      </svg>
+    </div>
+
     <h3>数字累加动画</h3>
     <div>
       <!-- <span>{{ num }}</span> -->
@@ -110,6 +142,7 @@
 import ScrollElTable from '../components/ScrollElTable.vue'
 import ProgressBar from '@/components/comGradientProgressBar'
 import QrCode from '@/components/qrCode.vue'
+import circleProcess from './functionItem/circleProcess'
 
 import Count from '@/utils/count'
 // import officePreview from '@/components/officePreview'
@@ -122,8 +155,9 @@ export default {
   components: {
     ScrollElTable,
     QrCode,
-    ProgressBar
-    // officePreview
+    ProgressBar,
+    circleProcess
+    // officePreview,
   },
   data() {
     return {
@@ -405,5 +439,31 @@ export default {
   color: white;
   font-size: 24px;
   transform: skewX(40deg);
+}
+
+.svg__cell {
+  .circle {
+    fill: none;
+    stroke: #7c83fd;
+    stroke-width: 8;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 314;
+    stroke-linecap: round;
+    animation: circle 3s infinite;
+    transition: all 1s;
+  }
+
+  .text {
+    font-size: 20px;
+  }
+  .percent {
+    font-size: 10px;
+  }
+}
+
+@keyframes circle {
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 </style>

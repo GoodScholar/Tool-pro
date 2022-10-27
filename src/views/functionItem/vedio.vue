@@ -1,101 +1,111 @@
-<!--
-  功能：功能描述
-  时间：2022年10月21日 10:35:59
-  版本：v1.0
--->
 <template>
-  <div class="">
-    <!-- <button>点击上传</button>
-        <input
-          type="file"
-          @change="openCamera($event)"
-          accept="video/*"
-          capture="user"
-        /> -->
-
-    <input
-      ref="inputVideo"
-      type="file"
-      name="video"
-      id="video-input"
-      accept="video/*"
-      capture="camcorder"
-      @change="videoChange"
-      @click="starVideotape"
-    />
-
-    <!-- video用于播放拍摄后的内容   -->
-    <video id="video" width="300" height="300" controls autoplay></video>
-
-    <!-- button用于点击开始录制视频  -->
-    <button @click="onVideo">点击录制视频</button>
+  <div id="app">
+    <input v-model="finishCount" @change="draw" type="number" class="input" />
+    <div
+      class="progress-radial"
+      :style="
+        point <= 50
+          ? 'background-image: linear-gradient(90deg, #C40006 50%, transparent 50%, transparent), linear-gradient(' +
+            deg +
+            'deg, #FECC1C 50%, #C40006 50%, #C40006);'
+          : 'background-image: linear-gradient(' +
+            deg +
+            'deg, #FECC1C 50%, transparent 50%, transparent), linear-gradient(270deg, #FECC1C 50%, #C40006 50%, #C40006)'
+      "
+    >
+      <div class="progress-text"></div>
+      <div
+        class="progress-radial-end"
+        :style="
+          'transform: rotate(' + (point <= 50 ? deg - 90 : 270 + deg) + 'deg)'
+        "
+      ></div>
+      <div class="progress-radial-start"></div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'VideoItem',
-  props: {},
-  components: {},
+  name: 'App',
   data() {
     return {
-      yincang: false
+      finishCount: 1,
+      totalCount: 3,
+      deg: 0,
+      point: 0
     }
   },
-  watch: {},
-  computed: {},
+  mounted() {
+    this.draw()
+  },
   methods: {
-    openCamera(t) {
-      // 判断浏览器
-      const userAgent = navigator.userAgent // 取得浏览器的userAgent字符串
-      const MicroMessenger = userAgent.indexOf('MicroMessenger') > -1 // 判断是否微信内置浏览器
-      // const isIPhone = userAgent.indexOf('iPhone') > -1 // 判断是否是iPhone
-      const i = t.target.files[0]
-      const fileurl = URL.createObjectURL(i)
-      let duration // 视频时长
-      const that = this
-      const n = new FileReader()
-      const fileSize = i.size / 1024 / 1024 // 获取文件大小
-      n.readAsDataURL(i)
-      n.addEventListener('loadend', function () {
-        const strContent = n.result
-        if (MicroMessenger && fileSize) {
-          if (fileSize > 1) {
-            console.log('文件大小' + fileSize)
-            that.$message.error('视频时间过长，请重新录制')
-          } else {
-            that.base64ToFile(strContent)
-          }
-        } else {
-          const audioElement = new Audio(fileurl)
-          // 经测试，发现audio也可获取视频的时长
-          audioElement.addEventListener('loadedmetadata', function (_event) {
-            duration = audioElement.duration
-            console.log('视频时长:' + duration)
-            if (duration > 8) {
-              that.$message.error('视频时间过长，请重新录制')
-            } else {
-              that.base64ToFile(strContent)
-            }
-          })
-        }
-      })
-    }, // 视频录制结束后将视频路径赋值给video标签进行播放
-    videoChange() {
-      const file = document.getElementById('video-input').files[0]
-      const url = URL.createObjectURL(file)
-      document.getElementById('video').src = url
-    },
-
-    // 点击button实现调起录制摄像头
-    onVideo() {
-      const that = this
-      that.$refs.inputVideo.click()
+    draw() {
+      const point =
+        Math.floor((this.finishCount / this.totalCount) * 10000) / 100
+      let deg = 0
+      // 360度，按百分比每分3.6度
+      if (point <= 50) {
+        deg = Math.round(90 + point * 3.6)
+      } else {
+        deg = Math.round(-90 + (point - 50) * 3.6)
+      }
+      this.deg = deg
+      this.point = point
     }
-  },
-  created() {},
-  mounted() {}
+  }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+.input {
+  margin: 30px auto;
+  display: block;
+}
+
+.progress-radial {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-image: linear-gradient(
+      90deg,
+      #c40006 50%,
+      transparent 50%,
+      transparent
+    ),
+    linear-gradient(90deg, #fecc1c 50%, #c40006 50%, #c40006);
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+.progress-radial-end,
+.progress-radial-start {
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 52rpx;
+  border-radius: 50%;
+  background: #000;
+  position: absolute;
+  z-index: 999;
+  line-height: normal;
+  transform-origin: center 60px;
+}
+
+.progress-radial .progress-text {
+  width: 88px;
+  height: 88px;
+  background: #ed1937;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 28px;
+  text-align: center;
+  line-height: 88px;
+  font-weight: bold;
+}
+</style>

@@ -153,6 +153,15 @@ const routes = [
           import(/* webpackChunkName: "about" */ '@/views/Test.vue')
       }
     ]
+  },
+  {
+    path: '/low',
+    name: 'LowCode',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '@/views/LowCode/index.vue'),
+    meta: {
+      title: '低代码'
+    }
   }
 ]
 

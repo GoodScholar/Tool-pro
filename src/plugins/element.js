@@ -49,7 +49,9 @@ import {
   MenuItemGroup,
   Progress,
   InputNumber,
-  DatePicker
+  DatePicker,
+  Radio,
+  ButtonGroup
 } from 'element-ui'
 
 Vue.use(Button)
@@ -97,6 +99,8 @@ Vue.use(MenuItemGroup)
 Vue.use(Progress)
 Vue.use(InputNumber)
 Vue.use(DatePicker)
+Vue.use(Radio)
+Vue.use(ButtonGroup)
 
 // 图片预览组件
 Vue.use(Preview)

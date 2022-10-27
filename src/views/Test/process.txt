@@ -1,0 +1,316 @@
+<template>
+  <div>
+    <canvas id="canvas" width="120px" height="120px"></canvas>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'processItem',
+  data() {
+    return {
+      m: 10
+    }
+  },
+  methods: {
+    drawRectProcess(
+      percent,
+      bgColor,
+      color,
+      coX,
+      coY,
+      recW,
+      recH,
+      r,
+      lineWidth,
+      windowsRatio,
+      scaleValue,
+      fontSize,
+      fontStyle,
+      fontFamily
+    ) {
+      /**
+       * 参数列表
+       * percent <int>          : 进度条百分比
+       * bgColor <String>       : 进度条背景颜色
+       * color <String>         : 进度条颜色
+       * coX <int>              : 进度条整体X轴偏移量
+       * coY <int>              : 进度条整体Y轴偏移量
+       * recW <int>             : 圆角矩形宽度
+       * recH <int>             : 圆角矩形高度
+       * r <int>                : 圆角半径
+       * lineWidth <int>        : 进度条宽度，建议内部底色比外部小 1
+       * windowsRatio<boolean>  : 是否启用 devicePixelRatio ，防止抗锯齿
+       * scaleValue <float>     : 图形整体缩放比例
+       * fontSize <int>         : 内部百分比字体大小
+       * fontStyle <String>     : 字体样式
+       * fontFamily <String>    : 字体家族
+       * */
+      const canvas = document.getElementById('canvas')
+      if (canvas === null) {
+        console.log('未找到canvas对象')
+        return
+      }
+      const ctx = canvas.getContext('2d')
+
+      if (windowsRatio) {
+        const width = canvas.width
+        const height = canvas.height
+        if (window.devicePixelRatio) {
+          // pc设备防止锯齿
+          canvas.style.width = width + 'px'
+          canvas.style.height = height + 'px'
+          canvas.height = height * window.devicePixelRatio
+          canvas.width = width * window.devicePixelRatio
+          ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+        }
+      }
+      // 整体缩放比例
+      ctx.scale(scaleValue, scaleValue)
+      if (percent > 100 || percent < 0) {
+        console.log('百分比错误')
+        return
+      }
+
+      // 绘制圆角矩形进度条
+      function drawPercentRect(
+        ctx,
+        percent,
+        color,
+        cOX,
+        cOY,
+        recW,
+        recH,
+        R,
+        lineWidth
+      ) {
+        /**
+         *
+         * 参数列表
+         * ctx <object>    : canvas对象
+         * percent <int>   : 进度条百分比
+         * color <String>  : 进度条颜色
+         * cOX <int>       : 进度条整体X轴偏移量
+         * cOY <int>       : 进度条整体Y轴偏移量
+         * recW <int>      : 圆角矩形宽度
+         * recH <int>      : 圆角矩形高度
+         * R <int>         : 圆角半径
+         * lineWidth <int> : 进度条宽度，建议内部底色比外部小 1
+         *
+         * 使用方法 ： 先绘制底色，再绘制进度条
+         * */
+
+        percent = parseInt(percent)
+        // 处理异常百分比
+        if (percent > 100) {
+          percent = 100
+        }
+        if (percent <= 0) {
+          percent = 0
+        }
+        // 字体样式
+        ctx.lineWidth = lineWidth // 线条宽度
+        ctx.strokeStyle = color // 颜色
+        // 定义矩形位置长度参数
+        const offsetX = cOX // x位移
+        const offsetY = cOY // y位移
+        const horizLineLength = recW // 横边长
+        const vertLineLength = recH // 竖边长
+        const cornerRadius = R // 拐角园半径
+        // 计算长度，用于百分比完成
+        const cornerLength = 2 * cornerRadius * Math.PI // 2*pi*r 计算拐角圆的周长
+        const totalLength =
+          cornerLength * 4 + horizLineLength * 2 + vertLineLength * 2 // 总的周长
+        // 计算矩形的每个部分开始的累积长度
+        const startT = 0 // 顶部开始起点 左边起始点
+        const startTR = horizLineLength // 右上角弧长起点  右上弧长起点就在横变边长的点
+        const startR = startTR + cornerLength // 右边起点
+        const startBR = startR + vertLineLength // 右下角弧长起点
+        const startB = startBR + cornerLength // 底边起点
+        const startBL = startB + horizLineLength // 左下角弧长起点
+        const startL = startBL + cornerLength // 左边起点
+        const startTL = startL + vertLineLength // 左上角弧长起点
+        const endT = startTL + cornerLength
+        let accumLength, x1, x2, y1, y2, x, y, start, end
+        if (percent < 6) {
+          accumLength = (percent / 100) * totalLength // 累计长度，用来表示画到那里停止
+        } else {
+          accumLength =
+            (percent / 100) * totalLength + (horizLineLength + cornerRadius) / 2 // 累计长度，用来表示画到那里停止
+        }
+
+        // 清空画布 取消就可以不清空
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 顶部绘制
+        let d = accumLength - startT // 与起点做差计算长度
+        d = Math.min(d, horizLineLength / 2)
+        if (d > 0) {
+          // （x1,y1）是起点的坐标
+          x1 =
+            offsetX + (cornerRadius * 2 + horizLineLength) / 2 + lineWidth / 2 // 这这里加可以画偏移
+          y1 = offsetY
+          // （x2,y2）是终点的坐标 ，d是计算出来的长度
+          x2 = offsetX + cornerRadius + d + horizLineLength / 2
+          y2 = offsetY
+          drawLine(x1, y1, x2, y2, ctx) // 绘制直线
+        }
+
+        // 右上弧边
+        d = accumLength - startTR
+        d = Math.min(d, cornerLength)
+        if (d > 0) {
+          x = offsetX + cornerRadius + horizLineLength
+          y = offsetY + cornerRadius
+          start = -Math.PI / 2
+          end = -Math.PI / 2 + ((d / cornerLength) * Math.PI) / 2
+          drawCorner(x, y, start, end, ctx, cornerRadius)
+        }
+
+        // 右边
+        d = accumLength - startR
+        d = Math.min(d, vertLineLength)
+        if (d > 0) {
+          x1 = offsetX + cornerRadius + horizLineLength + cornerRadius
+          y1 = offsetY + cornerRadius
+          x2 = offsetX + cornerRadius + horizLineLength + cornerRadius
+          y2 = offsetY + cornerRadius + d
+          drawLine(x1, y1, x2, y2, ctx)
+        }
+
+        // 右下角边
+        d = accumLength - startBR
+        d = Math.min(d, cornerLength)
+        if (d > 0) {
+          x = offsetX + cornerRadius + horizLineLength
+          y = offsetY + cornerRadius + vertLineLength
+          start = 0
+          end = ((d / cornerLength) * Math.PI) / 2
+          drawCorner(x, y, start, end, ctx, cornerRadius)
+        }
+
+        // 底边
+        d = accumLength - startB
+        d = Math.min(d, horizLineLength)
+        if (d > 0) {
+          x1 = offsetX + cornerRadius + horizLineLength
+          y1 = offsetY + cornerRadius + vertLineLength + cornerRadius
+          x2 = offsetX + cornerRadius + horizLineLength - d
+          y2 = offsetY + cornerRadius + vertLineLength + cornerRadius
+          drawLine(x1, y1, x2, y2, ctx)
+        }
+
+        // 左下弧边
+        d = accumLength - startBL
+        d = Math.min(d, cornerLength)
+        if (d > 0) {
+          x = offsetX + cornerRadius
+          y = offsetY + cornerRadius + vertLineLength
+          start = Math.PI / 2
+          end = Math.PI / 2 + ((d / cornerLength) * Math.PI) / 2
+          drawCorner(x, y, start, end, ctx, cornerRadius)
+        }
+
+        // 左边
+        d = accumLength - startL
+        d = Math.min(d, vertLineLength)
+        if (d > 0) {
+          x1 = offsetX
+          y1 = offsetY + cornerRadius + vertLineLength
+          x2 = offsetX
+          y2 = offsetY + cornerRadius + vertLineLength - d
+          drawLine(x1, y1, x2, y2, ctx)
+        }
+
+        // 左上弧边
+        d = accumLength - startTL
+        d = Math.min(d, cornerLength)
+        if (d > 0) {
+          x = offsetX + cornerRadius
+          y = offsetY + cornerRadius
+          start = Math.PI
+          end = Math.PI + ((d / cornerLength) * Math.PI) / 2
+          drawCorner(x, y, start, end, ctx, cornerRadius)
+        }
+        // 绘制最后顶部半边
+        d = accumLength - endT - 12
+        d = Math.min(d, horizLineLength / 2)
+        if (d > 0) {
+          // （x1,y1）是起点的坐标
+          x1 = offsetX + cornerRadius
+          y1 = offsetY
+          // （x2,y2）是终点的坐标 ，d是计算出来的长度
+          x2 = offsetX + cornerRadius + d
+          y2 = offsetY
+          drawLine(x1, y1, x2, y2, ctx) // 绘制直线
+        }
+
+        // @params  （x1，y1） 起点 ，（x2，y2）终点，ctx是canvas对象
+        function drawLine(x1, y1, x2, y2, ctx) {
+          ctx.beginPath()
+          ctx.lineCap = 'round'
+          ctx.moveTo(x1, y1)
+          ctx.lineTo(x2, y2)
+          ctx.stroke()
+        }
+        // @params  （x，y） 起点 ，（x2，y2）终点，ctx是canvas对象,cornerRadius 圆形半径
+        function drawCorner(x, y, start, end, ctx, cornerRadius) {
+          ctx.beginPath()
+          ctx.lineCap = 'round'
+          ctx.arc(x, y, cornerRadius, start, end, false)
+          ctx.stroke()
+        }
+      }
+
+      // 清除原有矩形
+      ctx.clearRect(0, 0, ctx.width, ctx.height)
+      // 绘制底色矩形 底色百分比为100
+      drawPercentRect(ctx, 100, bgColor, coX, coY, recW, recH, r, lineWidth - 1)
+      // 绘制进度条
+      drawPercentRect(ctx, percent, color, coX, coY, recW, recH, r, lineWidth)
+      // 绘制文字百分比
+      ctx.font = `${fontStyle} ${fontSize}px ${fontFamily}`
+      if (percent === 100) {
+        ctx.fillText(
+          `${percent}%`,
+          coX + recW / 2 - lineWidth / 2,
+          coY + r + lineWidth / 2 + recH / 2
+        )
+      } else if (percent < 10) {
+        ctx.fillText(
+          `${percent}%`,
+          coX + recW / 2 + lineWidth / 2,
+          coY + r + lineWidth / 2 + recH / 2
+        )
+      } else {
+        ctx.fillText(
+          `${percent}%`,
+          coX + recW / 2,
+          coY + r + lineWidth / 2 + recH / 2
+        )
+      }
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.drawRectProcess(
+        this.m,
+        '#c4c4c4',
+        'gold',
+        35,
+        35,
+        45,
+        45,
+        25,
+        15,
+        true,
+        0.7,
+        28,
+        'bold',
+        'Arial'
+      )
+    })
+  }
+}
+</script>
+<style scoped></style>
