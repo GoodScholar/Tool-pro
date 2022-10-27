@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import constant from './constant'
+import constant from '../../contant/constant'
 export default {
   name: 'layoutIndex',
   props: {},

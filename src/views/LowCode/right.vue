@@ -55,6 +55,7 @@
               </el-select>
             </div>
           </div>
+
           <div class="prop-items">
             <div v-for="(prop, key) in itemProps" :key="key">
               <span>{{ labelMap[key] || key }}:</span>

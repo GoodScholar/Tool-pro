@@ -6,13 +6,13 @@
 <template>
   <div class="low-container">
     <div class="header">
-      <div class="header__left">
+      <div class="header__left" @click="$router.push('/')">
         <img src="@/assets/imgs/G-icon.png" alt="" />
         <span class="header__left-title">Shadow</span>
       </div>
     </div>
     <el-row class="app-main">
-      <el-col :span="4">
+      <el-col :span="3">
         <!-- 左侧组件栏 -->
         <app-left
           @com-dragend="onDragend"
@@ -23,7 +23,7 @@
           "
         ></app-left>
       </el-col>
-      <el-col :span="15">
+      <el-col :span="16">
         <!-- 中间面板栏 -->
         <app-middle
           ref="middle"
@@ -82,6 +82,7 @@ export default {
   height: 60px;
   padding: 0 30px;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
   .header__left {
     display: flex;
     align-items: center;
@@ -99,7 +100,7 @@ export default {
 }
 
 .app-main {
-  height: calc(100% - 80px);
+  height: calc(100% - 82px);
   & > * {
     height: 100%;
   }

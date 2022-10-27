@@ -51,7 +51,10 @@ import {
   InputNumber,
   DatePicker,
   Radio,
-  ButtonGroup
+  ButtonGroup,
+  TimePicker,
+  Rate
+  // DateTimePicker
 } from 'element-ui'
 
 Vue.use(Button)
@@ -101,6 +104,9 @@ Vue.use(InputNumber)
 Vue.use(DatePicker)
 Vue.use(Radio)
 Vue.use(ButtonGroup)
+Vue.use(TimePicker)
+Vue.use(Rate)
+// Vue.use(DateTimePicker)
 
 // 图片预览组件
 Vue.use(Preview)

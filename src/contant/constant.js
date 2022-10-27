@@ -2,6 +2,11 @@ export default {
   menu: [
     {
       icon: 'el-icon-menu',
+      name: '简易低代码',
+      path: '/low'
+    },
+    {
+      icon: 'el-icon-menu',
       name: '360°全景图',
       path: '/panorama'
     },
