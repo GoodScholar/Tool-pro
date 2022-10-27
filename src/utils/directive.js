@@ -359,33 +359,6 @@ Vue.directive('copy', {
 })
 
 /**
- * todo 复制方法
- * @param {String} text
- */
-function handleClick(text) {
-  // 创建元素
-  if (!document.getElementById('copyTarget')) {
-    const copyTarget = document.createElement('input')
-    copyTarget.setAttribute(
-      'style',
-      'position:fixed;top:0;left:0;opacity:0;z-index:-1000;'
-    )
-    copyTarget.setAttribute('id', 'copyTarget')
-    document.body.appendChild(copyTarget)
-  }
-
-  // 复制内容
-  const input = document.getElementById('copyTarget')
-  input.value = text
-  input.select()
-  document.execCommand('copy')
-  Message({
-    message: '复制成功',
-    type: 'success'
-  })
-}
-
-/**
  * todo 水印指令
  */
 Vue.directive('waterMarker', {
@@ -398,30 +371,6 @@ Vue.directive('waterMarker', {
     )
   }
 })
-
-/**
- * todo 使用 canvas 特性生成 base64 格式的图片文件，设置其字体大小，颜色等。
- * @param {*} str
- * @param {*} parentNode
- * @param {*} font
- * @param {*} textColor
- */
-function addWaterMarker(str, parentNode, font, textColor) {
-  // 水印文字，父元素，字体，文字颜色
-  const can = document.createElement('canvas')
-  parentNode.appendChild(can)
-  can.width = 200
-  can.height = 150
-  can.style.display = 'none'
-  const cans = can.getContext('2d')
-  cans.rotate((-20 * Math.PI) / 180)
-  cans.font = font || '16px Microsoft JhengHei'
-  cans.fillStyle = textColor || 'rgba(180, 180, 180, 0.3)'
-  cans.textAlign = 'left'
-  cans.textBaseline = 'Middle'
-  cans.fillText(str, can.width / 10, can.height / 2)
-  parentNode.style.backgroundImage = 'url(' + can.toDataURL('image/png') + ')'
-}
 
 /**
  * todo 实现文字溢出显示，鼠标移入浮层展示全部 指令
@@ -541,6 +490,57 @@ Vue.directive('format', {
 })
 
 /**
+ * todo 倒计时指令
+ */
+Vue.directive('count', {
+  bind(el, binding) {
+    Count({
+      end: binding.end || 100, // 结束数字
+      interval: binding.interval || 10, // 指定速度
+      callback: (num) => {
+        el.innerHTML = num
+      }
+    })
+  }
+})
+
+/**
+ * todo 自定义默认图片指令
+ */
+Vue.directive('real-img', {
+  async bind(el, binding) {
+    const imgURL = binding.value
+    const exist = await imageIsExist(el.src)
+    if (!exist) {
+      const exist = await imageIsExist(imgURL)
+      exist && el.setAttribute('src', imgURL)
+    }
+  }
+})
+
+/**
+ * todo 判断一个图片是否存在, 注意是异步行为
+ * @param {*} url 图片链接
+ * @returns
+ */
+function imageIsExist(url) {
+  return new Promise((resolve) => {
+    let img = new Image()
+    img.src = url
+    img.onload = () => {
+      if (img.complete) {
+        resolve(true)
+        img = null
+      }
+    }
+    img.onerror = () => {
+      resolve(false)
+      img = null
+    }
+  })
+}
+
+/**
  * todo 字符串整形指令
  * @param {*} num
  * @returns
@@ -557,15 +557,53 @@ function formatNumber(num) {
   return x1 + x2
 }
 
-Vue.directive('count', {
-  bind(el, binding) {
-    console.log(binding)
-    Count({
-      end: binding.end || 100, // 结束数字
-      interval: binding.interval || 10, // 指定速度
-      callback: (num) => {
-        el.innerHTML = num
-      }
-    })
+/**
+ * todo 复制方法
+ * @param {String} text
+ */
+function handleClick(text) {
+  // 创建元素
+  if (!document.getElementById('copyTarget')) {
+    const copyTarget = document.createElement('input')
+    copyTarget.setAttribute(
+      'style',
+      'position:fixed;top:0;left:0;opacity:0;z-index:-1000;'
+    )
+    copyTarget.setAttribute('id', 'copyTarget')
+    document.body.appendChild(copyTarget)
   }
-})
+
+  // 复制内容
+  const input = document.getElementById('copyTarget')
+  input.value = text
+  input.select()
+  document.execCommand('copy')
+  Message({
+    message: '复制成功',
+    type: 'success'
+  })
+}
+
+/**
+ * todo 使用 canvas 特性生成 base64 格式的图片文件，设置其字体大小，颜色等。
+ * @param {*} str
+ * @param {*} parentNode
+ * @param {*} font
+ * @param {*} textColor
+ */
+function addWaterMarker(str, parentNode, font, textColor) {
+  // 水印文字，父元素，字体，文字颜色
+  const can = document.createElement('canvas')
+  parentNode.appendChild(can)
+  can.width = 200
+  can.height = 150
+  can.style.display = 'none'
+  const cans = can.getContext('2d')
+  cans.rotate((-20 * Math.PI) / 180)
+  cans.font = font || '16px Microsoft JhengHei'
+  cans.fillStyle = textColor || 'rgba(180, 180, 180, 0.3)'
+  cans.textAlign = 'left'
+  cans.textBaseline = 'Middle'
+  cans.fillText(str, can.width / 10, can.height / 2)
+  parentNode.style.backgroundImage = 'url(' + can.toDataURL('image/png') + ')'
+}

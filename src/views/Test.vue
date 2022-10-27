@@ -5,8 +5,16 @@
 -->
 <template>
   <div class="elTable">
-    <h3>边框进度条</h3>
+    <h3>默认图片指令</h3>
+    <div>
+      <img
+        v-real-img="require('@/assets/imgs/yann-icon.png')"
+        src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da7e0112ff334e48ad493ca2cb496d88~tplv-k3u1fbpfcp-no-mark:240:240:240:240.awebp"
+        alt=""
+      />
+    </div>
 
+    <h3>边框进度条</h3>
     <div>
       <circleProcess
         :start-time="10"
@@ -459,6 +467,10 @@ export default {
   .percent {
     font-size: 10px;
   }
+}
+
+img {
+  width: 40px;
 }
 
 @keyframes circle {
