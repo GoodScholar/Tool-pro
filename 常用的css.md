@@ -119,6 +119,28 @@ p {
 }
 ```
 
+# 渐变(方向)
+```css
+background: linear-gradient(to right, rgba(255, 255, 255,0),#3FB6F7,rgba(255,255,255,0));
+
+//渐变(角度)
+background: linear-gradient(88deg, #4DF7BF 0%, rgba(77, 247, 191, 0.26) 12%, rgba(77,247, 191, 0) 100%);
+```
+
+### 边框渐变
+
+```css
+.border-grident{
+  margin-top: 20px;
+  width: 200px;
+  height: 200px;
+  border: 4px solid;
+  border-image: linear-gradient(to right, #8f41e9, #578aef) 4;
+}
+```
+
+
+
 # eCharts 雷达图
 
 ```js
@@ -196,3 +218,107 @@ option = {
 
 ```
 
+# elementui样式修改的几种方式:**
+
+笔者目前技术栈是`vue`，在修改`elementui`的样式真的是苦不堪言，`style`使用`css`的预处理器(`less`, `sass`, `scss`)的写法如下
+
+```css
+// 第一种/deep/
+/deep/ .test {
+ ***
+}
+
+// 第二种::v-deep
+::v-deep .test{
+ ***
+}
+复制代码
+```
+
+在一个有时候会遇到修改`elementui`中`table`的全部样式，下面就来`一一对应`的去修改下的：
+
+① 修改**表格头部**背景:
+
+```css
+::v-deep .el-table th{
+    background: orange;
+  }
+复制代码
+```
+
+② 修改**表格行**背景:
+
+```css
+::v-deep .el-table tr{
+   background: #eee;
+  }
+复制代码
+```
+
+③ 修改**斑马线表格**的背景：
+
+```css
+::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
+    background: #ccc;
+  }
+复制代码
+```
+
+④ 修改**行内线**的颜色：
+
+```css
+::v-deep .el-table td,.building-top .el-table th.is-leaf {
+    border-bottom:  2px solid #eee;
+  }
+复制代码
+```
+
+⑤ 修改**表格最底部边框**颜色和高度：
+
+```css
+::v-deep .el-table::before{
+   border-bottom:  1px solid #ccc;
+    height: 3px
+  }
+复制代码
+```
+
+⑥ 修改**表头字体**颜色：
+
+```css
+::v-deep .el-table thead {
+    color: #ccc;
+    font-weight: 700;
+  }
+复制代码
+```
+
+⑦ 修改**表格内容**字体颜色和字体大小：
+
+```css
+::v-deep .el-table{
+    color: #6B91CE;
+    font-size: 14px;
+  }
+复制代码
+```
+
+⑧ 修改**表格无数据的时候**背景，字体颜色
+
+```css
+::v-deep .el-table__empty-block{
+    background: #ccc;
+  }
+::v-deep .el-table__empty-text{
+  color: #fff
+}
+复制代码
+```
+
+⑨ 修改**表格鼠标悬浮**`hover`背景色
+
+```css
+::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
+    background-color: pink;
+}
+```

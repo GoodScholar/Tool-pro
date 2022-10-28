@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import constant from '../../contant/constant'
+import constant from '@/constant/constant'
 export default {
   name: 'layoutIndex',
   props: {},
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       menu: [],
-      activeIndex: this.$route.path ?? '/panorama',
+      activeIndex: '/panorama',
       isCollapse: false
     }
   },

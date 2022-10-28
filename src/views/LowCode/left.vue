@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import UI from '@/contant/UI'
+import UI from '@/constant/UI'
 export default {
   name: 'LeftIndex',
   data() {

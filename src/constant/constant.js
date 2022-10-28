@@ -2,8 +2,13 @@ export default {
   menu: [
     {
       icon: 'el-icon-menu',
-      name: '简易低代码',
+      name: '表单低代码',
       path: '/low'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: 'echarts低代码',
+      path: '/echartsLow'
     },
     {
       icon: 'el-icon-menu',
@@ -88,7 +93,7 @@ export default {
     },
     {
       icon: 'el-icon-menu',
-      name: '测试',
+      name: '自定义指令',
       path: '/test'
     },
     {

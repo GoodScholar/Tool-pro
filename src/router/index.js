@@ -20,6 +20,7 @@ const routes = [
   {
     path: '/',
     name: 'HomeIndex',
+    redirect: '/panorama',
     component: () =>
       import(/* webpackChunkName: "HomeIndex" */ '@/views/Home/layout.vue'),
     children: [
@@ -159,6 +160,15 @@ const routes = [
     name: 'LowCode',
     component: () =>
       import(/* webpackChunkName: "LowCode" */ '@/views/LowCode/index.vue'),
+    meta: {
+      title: '低代码'
+    }
+  },
+  {
+    path: '/echartsLow',
+    name: 'EchartsLow',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '@/views/echarts/index.vue'),
     meta: {
       title: '低代码'
     }

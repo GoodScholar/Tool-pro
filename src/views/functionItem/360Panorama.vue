@@ -42,7 +42,7 @@ export default {
       })
 
       this.littlePlanet = new PanoLens.ImagePanorama(
-        require('@/assets/imgs/view.jpg')
+        require('@/assets/imgs/pragmata.jpg')
       )
 
       this.viewer.add(this.littlePlanet)
