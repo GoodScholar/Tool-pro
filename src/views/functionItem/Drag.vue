@@ -82,7 +82,10 @@ export default {
 
     // 使用刚指定的配置项和数据显示图表。
     this.myChart.setOption(option)
-    this.myChart.resize()
+
+    this.$nextTick(() => {
+      this.myChart.resize()
+    })
 
     // window.onresize =
   }
