@@ -1,111 +1,112 @@
+<!--
+  功能：功能描述
+  时间：2022年10月31日 15:59:29
+  版本：v1.0
+-->
 <template>
-  <div id="app">
-    <input v-model="finishCount" @change="draw" type="number" class="input" />
+  <div class="test__container">
     <div
-      class="progress-radial"
-      :style="
-        point <= 50
-          ? 'background-image: linear-gradient(90deg, #C40006 50%, transparent 50%, transparent), linear-gradient(' +
-            deg +
-            'deg, #FECC1C 50%, #C40006 50%, #C40006);'
-          : 'background-image: linear-gradient(' +
-            deg +
-            'deg, #FECC1C 50%, transparent 50%, transparent), linear-gradient(270deg, #FECC1C 50%, #C40006 50%, #C40006)'
-      "
+      class="box"
+      v-for="(item, index) in arr"
+      :key="index"
+      @click="clickBOX"
     >
-      <div class="progress-text"></div>
-      <div
-        class="progress-radial-end"
-        :style="
-          'transform: rotate(' + (point <= 50 ? deg - 90 : 270 + deg) + 'deg)'
-        "
-      ></div>
-      <div class="progress-radial-start"></div>
+      {{ item.id }}
+
+      <button @click="click1">你好</button>
+      <button @click="click2">你好呀</button>
+
+      <input type="checkbox" :value="item.id" v-model="idArr" class="IdIpt" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
+  name: 'demoItem1',
+  props: {},
+  components: {},
   data() {
     return {
-      finishCount: 1,
-      totalCount: 3,
-      deg: 0,
-      point: 0
+      idArr: [],
+      selectStr: '',
+      arr: [
+        {
+          id: '1'
+        },
+        {
+          id: '2'
+        },
+        {
+          id: '3'
+        },
+        {
+          id: '4'
+        },
+        {
+          id: '5'
+        },
+        {
+          id: '6'
+        }
+      ]
     }
   },
-  mounted() {
-    this.draw()
+  watch: {
+    idArr: {
+      handler(newVal) {
+        console.log(newVal)
+        this.selectStr = newVal.join(',')
+      },
+      deep: true
+    }
   },
+  computed: {},
   methods: {
-    draw() {
-      const point =
-        Math.floor((this.finishCount / this.totalCount) * 10000) / 100
-      let deg = 0
-      // 360度，按百分比每分3.6度
-      if (point <= 50) {
-        deg = Math.round(90 + point * 3.6)
-      } else {
-        deg = Math.round(-90 + (point - 50) * 3.6)
+    clickBOX(e) {
+      if (e.target.children[0]) {
+        e.target.children[0].checked = !e.target.children[0].checked
+        if (e.target.children[0].checked) {
+          this.idArr.push(e.target.children[0].defaultValue)
+        } else {
+          this.idArr = this.idArr.filter(
+            (item) => item !== e.target.children[0].defaultValue
+          )
+        }
       }
-      this.deg = deg
-      this.point = point
+    },
+    click1() {
+      console.log('1')
+    },
+    click2() {
+      console.log('2')
     }
-  }
+  },
+  created() {},
+  mounted() {}
 }
 </script>
 
-<style>
-.input {
-  margin: 30px auto;
-  display: block;
-}
-
-.progress-radial {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-image: linear-gradient(
-      90deg,
-      #c40006 50%,
-      transparent 50%,
-      transparent
-    ),
-    linear-gradient(90deg, #fecc1c 50%, #c40006 50%, #c40006);
-  line-height: normal;
+<style lang="scss" scoped>
+.test__container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  margin: 0 auto;
+  flex-wrap: nowrap;
 }
-
-.progress-radial-end,
-.progress-radial-start {
-  width: 16px;
-  height: 16px;
-  top: 0;
-  left: 52rpx;
-  border-radius: 50%;
-  background: #000;
-  position: absolute;
-  z-index: 999;
-  line-height: normal;
-  transform-origin: center 60px;
-}
-
-.progress-radial .progress-text {
-  width: 88px;
-  height: 88px;
-  background: #ed1937;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 28px;
+.box {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  line-height: 200px;
   text-align: center;
-  line-height: 88px;
-  font-weight: bold;
+  background-color: pink;
+  margin: 0 20px 20px 0;
+}
+
+.IdIpt {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
 }
 </style>
