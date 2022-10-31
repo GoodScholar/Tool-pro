@@ -13,9 +13,7 @@
     >
       {{ item.id }}
 
-      <button @click="click1">你好</button>
-      <button @click="click2">你好呀</button>
-
+      <!-- 保持在最后一个 -->
       <input type="checkbox" :value="item.id" v-model="idArr" class="IdIpt" />
     </div>
   </div>
@@ -64,13 +62,16 @@ export default {
   computed: {},
   methods: {
     clickBOX(e) {
-      if (e.target.children[0]) {
-        e.target.children[0].checked = !e.target.children[0].checked
-        if (e.target.children[0].checked) {
-          this.idArr.push(e.target.children[0].defaultValue)
+      const lastIndex = e.target.children.length - 1
+      const checkbox = e.target.children[lastIndex]
+
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked
+        if (checkbox.checked) {
+          this.idArr.push(checkbox.defaultValue)
         } else {
           this.idArr = this.idArr.filter(
-            (item) => item !== e.target.children[0].defaultValue
+            (item) => item !== checkbox.defaultValue
           )
         }
       }
