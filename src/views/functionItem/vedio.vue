@@ -13,8 +13,17 @@
     >
       {{ item.id }}
 
+      <button @click="click1">你好</button>
+      <button @click="click2">你好1</button>
+
       <!-- 保持在最后一个 -->
-      <input type="checkbox" :value="item.id" v-model="idArr" class="IdIpt" />
+      <input
+        ref="IdIpt"
+        type="checkbox"
+        :value="item.id"
+        v-model="idArr"
+        class="IdIpt"
+      />
     </div>
   </div>
 </template>
@@ -64,6 +73,7 @@ export default {
     clickBOX(e) {
       const lastIndex = e.target.children.length - 1
       const checkbox = e.target.children[lastIndex]
+      // const checkbox = this.$refs.IdIpt[index]
 
       if (checkbox) {
         checkbox.checked = !checkbox.checked
