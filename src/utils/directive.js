@@ -261,20 +261,32 @@ Vue.directive('debounce', {
  *  todo 节流 每单位时间可触发一次
  */
 Vue.directive('throttle', {
-  inserted(el, binding) {
-    const [fn, event = 'click'] = binding.value
-    const time = binding.arg ? binding.arg * 1000 : 1000
+  bind(el, binding) {
+    const [fn, event = 'click', delay = 2000] = binding.value
     let timer = null
-    let timerEnd = null
     el.addEventListener(event, () => {
-      if (timer) {
-        clearTimeout(timerEnd)
-        return (timerEnd = setTimeout(() => fn(), time))
-      }
-      fn()
-      timer = setTimeout(() => (timer = null), time)
+      if (timer) return
+      timer = setTimeout(() => {
+        fn()
+        timer = null
+      }, delay)
     })
   }
+
+  // inserted(el, binding) {
+  //   const [fn, event = 'click'] = binding.value
+  //   const time = binding.arg ? binding.arg * 1000 : 1000
+  //   let timer = null
+  //   let timerEnd = null
+  //   el.addEventListener(event, () => {
+  //     if (timer) {
+  //       clearTimeout(timerEnd)
+  //       return (timerEnd = setTimeout(() => fn(), time))
+  //     }
+  //     fn()
+  //     timer = setTimeout(() => (timer = null), time)
+  //   })
+  // }
 })
 
 /**

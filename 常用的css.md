@@ -1,14 +1,12 @@
 # 颜色HEX透明度设置 免转换
 
-```js
+```css
 background-color: rgba($color: #000, $alpha: 0.05);
 ```
 
-
-
 # flex布局 一行几列
 
-```
+```html
 -- html
 <ul class="card_wrap">
 	 <li class="c_item"></li>
@@ -22,7 +20,7 @@ background-color: rgba($color: #000, $alpha: 0.05);
 </ul>
 ```
 
-```
+```css
 ---css
 .card_wrap { // 大盒子
   width: 100%;
@@ -43,7 +41,7 @@ background-color: rgba($color: #000, $alpha: 0.05);
 
 # 三角形
 
-```
+```css
 上
 .kailong{
 	width:0;
@@ -82,7 +80,7 @@ background-color: rgba($color: #000, $alpha: 0.05);
 
 ##### 1、单行文本省略：
 
-```typescript
+```css
 overflow: hidden;//溢出隐藏
 white-space: nowrap;//禁止换行
 text-overflow: ellipsis;//...
@@ -91,7 +89,7 @@ text-overflow: ellipsis;//...
 
 ##### 2、多行文本省略：
 
-```javascript
+```css
 display: -webkit-box;//谷歌
 -webkit-box-orient: vertical;
 -webkit-line-clamp: 3;//显示几行
@@ -125,6 +123,27 @@ background: linear-gradient(to right, rgba(255, 255, 255,0),#3FB6F7,rgba(255,255
 
 //渐变(角度)
 background: linear-gradient(88deg, #4DF7BF 0%, rgba(77, 247, 191, 0.26) 12%, rgba(77,247, 191, 0) 100%);
+
+
+```
+
+# 文字渐变
+
+```css
+.title {
+	position: relative;
+	color: #ec428c;
+	&::after {
+		content: attr(data-text);
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 10;
+		color: #32d1d3;
+		-webkit-mask: linear-gradient(to bottom, transparent, #000);
+		white-space: nowrap;
+	}
+}
 ```
 
 ### 边框渐变

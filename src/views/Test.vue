@@ -86,7 +86,9 @@
 
     <div>
       <h3>防抖指令</h3>
-      <button v-debounce:[1000]="debounceClick">防抖</button>
+      <button v-debounce="debounceClick">防抖</button>
+      <h3>节流指令</h3>
+      <button v-throttle="[throttleClick, 'click', 1000]">节流</button>
     </div>
     <hr />
 
@@ -220,6 +222,9 @@ export default {
   computed: {},
   methods: {
     debounceClick() {
+      console.log('只触发一次')
+    },
+    throttleClick() {
       console.log('只触发一次')
     },
     // 树形数据转为一维数组
