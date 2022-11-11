@@ -478,10 +478,8 @@ export default {
   methods: {
     onResize(x, y, width, height) {
       this.xy = width + height
-      this.ecahrtsObj = {
-        ecahrtsX: x,
-        ecahrtsY: y
-      }
+      this.ecahrtsObj.ecahrtsX = x
+      this.ecahrtsObj.ecahrtsY = y
     },
     // 开始拖动元素、将拖拽对象的参数传递给拖拽存放地
     dragStart(e, item) {

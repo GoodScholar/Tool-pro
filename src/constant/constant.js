@@ -12,7 +12,7 @@ export default {
     },
     {
       icon: 'el-icon-menu',
-      name: 'echarts低代码',
+      name: 'echarts',
       path: '/dragEcharts'
     },
     {
