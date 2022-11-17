@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
 import * as echarts from 'echarts'
 import utils from './utils/util' // 通用方法库
 // import UIPlugin from './plugins/UI-Plugin'

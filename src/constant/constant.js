@@ -17,6 +17,11 @@ export default {
     },
     {
       icon: 'el-icon-menu',
+      name: '3D可视化',
+      path: '/three'
+    },
+    {
+      icon: 'el-icon-menu',
       name: '360°全景图',
       path: '/panorama'
     },

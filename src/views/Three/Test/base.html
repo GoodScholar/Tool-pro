@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="js/OrbitControls.js"></script>
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
+    <!-- 引入 dat.gui -->
+    <script src="https://cdn.bootcss.com/dat-gui/0.7.1/dat.gui.min.js"></script>
+    <script src="http://www.wjceo.com/lib/js/libs/stats.min.js"></script>
+    <script>
+      // 创建场景
+      var scene = new THREE.Scene()
+      // 创建透视投影相机：
+      // 1、fov：视野：表示摄像机能看到的视野。推荐默认值50
+      // 2、aspect：指定渲染结果水平方向和竖直方向长度的比值，推荐默认值为窗口的宽高比，即window.innerWidth/window.innerHeight，如果比例设置的不对，会发现渲染出来的画面有拉伸或者压缩的感觉。
+      // 3、near：近端渲染距离：指定从距离摄像机多近的位置开始渲染，推荐默认值0.1
+      // 4、far：远端距离：指定摄像机从它所在的位置最远能看到多远，太小场景中的远处不会被渲染，太大会浪费资源影响性能，推荐默认值1000。
+      var camera = new THREE.PerspectiveCamera(
+        50,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      )
+      // 设置相机位置
+      // camera.position.x = 5
+      // camera.position.y = 10
+      // camera.position.z = 10
+
+      // 以上设置相机位置可以简写为：
+      camera.position.set(5, 10, 10)
+      // 创建WebGLRenderer渲染器
+      var renderer = new THREE.WebGLRenderer()
+      // 通过调用 setSize() 方法设置渲染的长宽（设置渲染器为全屏）
+      renderer.setSize(window.innerWidth, window.innerHeight)
+      // 将渲染结果展示到页面上
+      document.body.appendChild(renderer.domElement)
+
+      // 10.1 定义对象，设置需要修改的数据
+      var controls = {
+        positionX: 0,
+        positionY: 0,
+        positionZ: 0
+      }
+
+      // 结合场景和相机进行渲染，即用摄像机拍下此刻的场景（最后一步）
+      // 二维几何体模型：PlaneGeometry（平面几何体） CircleGeometry（圆形几何体）RingGeometry（圆环几何体）
+      // 三维几何体模型：BoxGeometry（立方几何体）SphereGeometry（球几何体）CylinderGeometry（圆柱几何体）TorusGeometry（圆环几何体）TubeGeometry（管道几何体）
+      var geometry = new THREE.BoxGeometry(4, 4, 4)
+      var materialBasic = new THREE.MeshBasicMaterial({
+        color: 0xffffff, // 白色
+        wireframe: true // 是否将几何体渲染为线框，默认值为false（即渲染为平面多边形）
+      })
+
+      // 创建法线网格材质，将材质包裹在几何体模型上
+      var materialNormal = new THREE.MeshNormalMaterial()
+
+      // 创建多种网格，将材质包裹在几何体模型上
+      var cube = THREE.SceneUtils.createMultiMaterialObject(geometry, [
+        materialBasic,
+        materialNormal
+      ])
+      // 让相机 看向（对着）物体（拍摄对象）的位置（默认状态下，相机将指向三维坐标系的原点。）
+      camera.lookAt(cube.position)
+
+      // 将网格添加到场景中
+      scene.add(cube)
+
+      // 为了方便观察3D图像，添加三维坐标系对象
+      var spotLight = new THREE.SpotLight(0xffffff)
+      spotLight.position.set(0, 20, 20)
+      spotLight.intensity = 5
+
+      //  把三维坐标系 添加到场景中
+      scene.add(spotLight)
+      var axes = new THREE.AxisHelper(6)
+      scene.add(axes)
+      renderer.render(scene, camera)
+
+      // 11、实例化性能监视插件
+      var stats = new Stats()
+      // 11.1 把stats对象生成的dom，添加到页面中（这样就能在页面中看到性能监视器了）
+      document.body.appendChild(stats.dom)
+      // 9、创建动画循环渲染函数
+      function animate() {
+        // 9.1 循环调用函数
+        requestAnimationFrame(animate)
+        // 每一次animate函数调用，都让网格比上一次 X 轴、Y 轴各旋转增加 0.01 弧度
+        cube.rotation.x += 0.01
+        cube.rotation.y += 0.01
+        // 11.2 更新性能插件
+        stats.update()
+        // 3.3 结合场景和相机进行渲染，即用摄像机拍下此刻的场景
+        renderer.render(scene, camera)
+      }
+      // 调用动画函数
+      animate()
+
+      // 10.2 实例化dat.GUI对象
+      var gui = new dat.GUI()
+      // 10.3 把需要修改的配置添加dat.GUI对象中
+      gui.add(controls, 'positionX', -10, 10).onChange(updatePosition)
+      gui.add(controls, 'positionY', -10, 10).onChange(updatePosition)
+      gui.add(controls, 'positionZ', -1, 1).onChange(updatePosition)
+      // 10.4 定义更新模型位置函数
+      function updatePosition() {
+        cube.position.set(
+          controls.positionX,
+          controls.positionY,
+          controls.positionZ
+        )
+      }
+
+      function render() {
+        renderer.render(scene, camera) //执行渲染操作
+        // mesh.rotateY(0.01);//每次绕y轴旋转0.01弧度
+        requestAnimationFrame(render) //请求再次执行渲染函数render
+      }
+      render()
+      var controls = new THREE.OrbitControls(camera, renderer.domElement) //创建控件对象
+    </script>
+  </body>
+</html>

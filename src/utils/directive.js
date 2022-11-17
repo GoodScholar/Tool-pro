@@ -15,6 +15,26 @@ Vue.directive('zoom', {
 })
 
 /**
+ * todo 点击元素以外 执行指令
+ */
+Vue.directive('clickoutside', {
+  bind(el, binding) {
+    const documentHandler = (e) => {
+      if (el.contains(e.target)) return false
+      if (binding.expression) {
+        binding.value(e)
+      }
+    }
+    el.documentHandler = documentHandler
+    document.addEventListener('click', documentHandler, false)
+  },
+  unbind(el) {
+    document.removeEventListener('click', el.documentHandler, false)
+    delete el.documentHandler
+  }
+})
+
+/**
  * todo 拖动 指令
  */
 Vue.directive('drag', {

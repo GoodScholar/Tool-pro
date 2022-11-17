@@ -193,7 +193,6 @@ const routes = [
       title: '低代码'
     }
   },
-
   {
     path: '/echartsLow',
     name: 'EchartsLow',
@@ -202,6 +201,31 @@ const routes = [
     meta: {
       title: '低代码'
     }
+  },
+  {
+    path: '/fit',
+    name: 'ScreenFit',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '../views/ScreenFit'),
+    meta: {
+      title: '低代码'
+    }
+  },
+  {
+    path: '/three',
+    name: 'ThreeItem',
+    component: () =>
+      import(/* webpackChunkName: "ThreeItem" */ '../views/Three/layout.vue'),
+    children: [
+      {
+        path: 'town',
+        name: 'ThreeTown',
+        component: () =>
+          import(
+            /* webpackChunkName: "ThreeTown" */ '../views/Three/components/ThreeTown.vue'
+          )
+      }
+    ]
   }
 ]
 
