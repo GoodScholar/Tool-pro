@@ -212,6 +212,15 @@ const routes = [
     }
   },
   {
+    path: '/ruler',
+    name: 'Ruler',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '../views/Ruler/app'),
+    meta: {
+      title: '低代码'
+    }
+  },
+  {
     path: '/three',
     name: 'ThreeItem',
     component: () =>

@@ -115,6 +115,11 @@ export default {
       icon: 'el-icon-menu',
       name: 'JSON编辑器',
       path: '/edited'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: '标尺',
+      path: '/ruler'
     }
   ]
 }
