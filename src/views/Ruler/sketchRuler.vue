@@ -32,9 +32,9 @@
       :canvasConfigs="canvasConfigs"
       @onLineChange="handleLineChange"
     />
-    <!-- <i class="fab fa-searchengin icon"></i> -->
+
     <i
-      class="corner"
+      class="corner fa"
       :class="cornerActiveClass"
       :style="cornerStyle"
       @click="onCornerClick"
@@ -59,11 +59,6 @@ export default {
   name: 'SketchRuler',
   components: {
     RulerWrapper
-  },
-  data() {
-    return {
-      vertical: true
-    }
   },
   props: {
     scale: {
@@ -112,7 +107,10 @@ export default {
         return []
       }
     },
-    cornerActive: Boolean,
+    cornerActive: {
+      type: Boolean,
+      default: false
+    },
     lang: String,
     isOpenMenuFeature: {
       type: Boolean,
@@ -138,30 +136,36 @@ export default {
       type: Object,
       default: () => {
         return {
-          bgColor: 'rgba(225,225,225, 0)', // ruler bg color
-          longfgColor: '#BABBBC', // ruler longer mark color
-          shortfgColor: '#C8CDD0', // ruler shorter mark color
-          fontColor: '#7D8694', // ruler font color
-          shadowColor: '#E8E8E8', // ruler shadow color
-          lineColor: '#EB5648',
-          borderColor: '#DADADC',
+          bgColor: 'rgba(225,225,225, 0)', // ruler bg color 背景色
+          longfgColor: '#BABBBC', // ruler longer mark color 标尺长标记颜色
+          shortfgColor: '#C8CDD0', // ruler shorter mark color 标尺短标记颜色
+          fontColor: '#7D8694', // ruler font color 标尺字体颜色
+          shadowColor: '#E8E8E8', // ruler shadow color 标尺阴影色
+          lineColor: '#EB5648', // 辅助线颜色
+          borderColor: '#DADADC', // 边框颜色
           cornerActiveColor: 'rgb(235, 86, 72, 0.6)',
           menu: DEFAULTMENU
         }
       }
     }
   },
+  data() {
+    return {
+      vertical: true,
+      middleDate: false
+    }
+  },
   computed: {
     cornerActiveClass() {
-      return this.cornerActive ? ' active' : ''
+      return this.cornerActive ? 'fa-eye' : 'fa-eye-slash'
     },
     cornerStyle() {
       return {
         backgroundColor: this.palette.bgColor,
         width: this.thick + 'px',
-        height: this.thick + 'px',
-        borderRight: `1px solid ${this.palette.borderColor}`,
-        borderBottom: `1px solid ${this.palette.borderColor}`
+        height: this.thick + 'px'
+        // borderRight: `1px solid ${this.palette.borderColor}`,
+        // borderBottom: `1px solid ${this.palette.borderColor}`
       }
     },
     canvasConfigs() {
@@ -189,8 +193,9 @@ export default {
     }
   },
   methods: {
-    onCornerClick(e) {
-      this.$emit('onCornerClick', e)
+    onCornerClick() {
+      this.middleDate = !this.middleDate
+      this.$emit('onCornerClick', this.middleDate)
     },
     handleLineChange(arr, vertical) {
       const newLines = vertical
@@ -216,16 +221,22 @@ export default {
   }
 }
 .corner {
-  position: absolute;
-  left: 0;
-  top: 0;
+  // position: absolute;
+  // left: 0;
+  // top: 0;
+
   pointer-events: auto;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-sizing: content-box;
-  // &.active {
-  //     background-color: ${props => props.cornerActiveColor} !important;
-  // }
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  &::before {
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .indicator {
@@ -236,19 +247,7 @@ export default {
     background: white;
   }
 }
-.corner {
-  position: absolute;
-  left: 0;
-  top: 0;
 
-  pointer-events: auto;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-sizing: content-box;
-  // &.active {
-  //   // background-color: ${props => props.cornerActiveColor} !important;
-  // }
-}
 .ruler {
   width: 100%;
   height: 100%;

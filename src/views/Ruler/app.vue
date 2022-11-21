@@ -9,12 +9,17 @@
       :startX="startX"
       :startY="startY"
       :shadow="shadow"
+      :cornerActive="cornerActive"
       :horLineArr="lines.h"
       :verLineArr="lines.v"
-      :cornerActive="true"
+      :palette="palette"
       @handleLine="handleLine"
       @onCornerClick="handleCornerClick"
     ></SketchRule>
+
+    <!--      @mousedown="getMouseDown"
+      @mousemove="moveFlag && getMouseMove($event)"
+      @mouseup="getMouseUp" -->
     <div
       ref="screensRef"
       id="screens"
@@ -35,23 +40,53 @@ import SketchRule from './sketchRuler.vue'
 const rectWidth = 160
 const rectHeight = 200
 export default Vue.extend({
+  components: {
+    SketchRule
+  },
   data() {
     return {
-      scale: 2, // 658813476562495, //1,
+      midDate: {
+        h: [],
+        v: []
+      },
+      palette: {
+        bgColor: '#18181c', // ruler bg color 背景色
+        longfgColor: '#fff', // ruler longer mark color 标尺刻度长标记颜色
+        shortfgColor: '#fff', // ruler shorter mark color 标尺刻度短标记颜色
+        fontColor: '#fff', // ruler font color 标尺字体颜色
+        lineColor: '#EB5648', // 辅助线颜色
+        borderColor: 'transparent' // 边框颜色
+      },
+      // 是否隐藏参考线
+      cornerActive: false,
+      scale: 1, // 1,
       startX: 0,
       startY: 0,
       lines: {
-        // h: [100, 200],
-        // v: [100, 200]
+        h: [],
+        v: []
       },
       thick: 20,
       lang: 'zh-CN', // 中英文
       isShowRuler: true, // 显示标尺
-      isShowReferLine: true // 显示参考线
+      isShowReferLine: true, // 显示参考线
+
+      // todo 鼠标
+      moveFlag: false,
+      startPoint: { x: 0, y: 0 }
     }
   },
-  components: {
-    SketchRule
+  watch: {
+    lines: {
+      handler() {},
+      deep: true
+    },
+    movePoint: {
+      handler(newVal) {
+        console.log(newVal.x, newVal.y)
+      },
+      deep: true
+    }
   },
   computed: {
     shadow() {
@@ -71,11 +106,18 @@ export default Vue.extend({
     }
   },
   methods: {
+    // 添加参考辅助线
     handleLine(lines) {
-      this.lines = lines
+      this.midDate = this.lines = lines
     },
-    handleCornerClick() {
-      console.log('click')
+    // 处理是否隐藏参考线
+    handleCornerClick(item) {
+      this.cornerActive = item
+      if (item) {
+        this.lines = {}
+      } else {
+        this.lines = this.midDate
+      }
     },
     handleScroll() {
       const screensRect = document
@@ -101,11 +143,39 @@ export default Vue.extend({
         const nextScale = parseFloat(
           Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2)
         )
+
         this.scale = nextScale
       }
       this.$nextTick(() => {
         this.handleScroll()
       })
+    },
+    // todo
+    // 鼠标按下
+    getMouseDown(e) {
+      this.moveFlag = true
+      this.startPoint = {
+        x: e.offsetX,
+        y: e.offsetY
+      }
+    },
+    // 鼠标移动
+    getMouseMove(e) {
+      // this.movePoint = {
+      //   x: e.offsetX,
+      //   y: e.offsetY
+      // }
+
+      console.log(e.offsetY, e.offsetX)
+      // this.$nextTick(() => {
+      //   this.$refs.screensRef.scrollTop = this.startPoint.y
+      //   this.$refs.screensRef.scrollLeft = this.startPoint.x
+      // })
+    },
+    // 鼠标抬起 计算提示弹窗的位置
+    getMouseUp() {
+      this.moveFlag = false
+      console.log('getMouseUp')
     }
   },
   mounted() {
@@ -117,26 +187,14 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scope>
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  overflow: hidden;
-}
-
-body * {
-  box-sizing: border-box;
-  user-select: none;
-}
-
 .wrapper {
-  background-color: #f5f5f5;
   position: absolute;
-  top: 100px;
-  left: 100px;
-  width: 600px;
+  background-color: #f5f5f5;
+  top: 50px;
+  left: 50px;
+  width: 800px;
   height: 500px;
-  border: 1px solid #dadadc;
+  // border: 1px solid #dadadc;
 }
 
 #screens {
@@ -150,6 +208,8 @@ body * {
   position: absolute;
   width: 5000px;
   height: 3000px;
+
+  background: url('~@/assets/imgs/screen.png') repeat;
 }
 
 .scale-value {
@@ -158,31 +218,14 @@ body * {
   bottom: 100%;
 }
 
-.button {
-  position: absolute;
-  left: 100px;
-  bottom: 100%;
-}
-
-.button-ch {
-  position: absolute;
-  left: 200px;
-  bottom: 100%;
-}
-.button-en {
-  position: absolute;
-  left: 230px;
-  bottom: 100%;
-}
-
 #canvas {
   position: absolute;
-  top: 80px;
+  top: 50%;
   left: 50%;
-  margin-left: -80px;
-  width: 160px;
-  height: 200px;
+  width: 1920px;
+  height: 1080px;
   background: lightblue;
   transform-origin: 50% 0;
+  pointer-events: none;
 }
 </style>

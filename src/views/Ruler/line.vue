@@ -65,8 +65,8 @@ export default {
     },
     actionStyle() {
       const actionStyle = this.vertical
-        ? { left: this.thick + 'px' }
-        : { top: this.thick + 'px' }
+        ? { left: this.thick + 'px', color: this.palette.fontColor }
+        : { top: this.thick + 'px', color: this.palette.fontColor }
       return actionStyle
     }
   },
