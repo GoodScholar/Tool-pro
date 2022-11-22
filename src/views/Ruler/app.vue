@@ -17,14 +17,14 @@
       @onCornerClick="handleCornerClick"
     ></SketchRule>
 
-    <!--      @mousedown="getMouseDown"
-      @mousemove="moveFlag && getMouseMove($event)"
-      @mouseup="getMouseUp" -->
     <div
       ref="screensRef"
       id="screens"
       @wheel="handleWheel"
       @scroll="handleScroll"
+      @mousedown="getMouseDown"
+      @mousemove="moveFlag && getMouseMove($event)"
+      @mouseup="getMouseUp"
     >
       <div ref="containerRef" class="screen-container">
         <div id="canvas" :style="canvasStyle" />
@@ -73,7 +73,10 @@ export default Vue.extend({
 
       // todo 鼠标
       moveFlag: false,
-      startPoint: { x: 0, y: 0 }
+      downX: 0,
+      scrollLeft: 0,
+      downY: 0,
+      scrollTop: 0
     }
   },
   watch: {
@@ -154,28 +157,36 @@ export default Vue.extend({
     // 鼠标按下
     getMouseDown(e) {
       this.moveFlag = true
-      this.startPoint = {
-        x: e.offsetX,
-        y: e.offsetY
-      }
+
+      // 鼠标左右滑动
+      this.downX = e.clientX
+      this.scrollLeft = this.$refs.screensRef.scrollLeft
+
+      // 鼠标上下滑动
+      this.downY = e.clientY
+      this.scrollTop = this.$refs.screensRef.scrollTop
     },
     // 鼠标移动
     getMouseMove(e) {
-      // this.movePoint = {
-      //   x: e.offsetX,
-      //   y: e.offsetY
-      // }
+      // 鼠标左右滑动
+      const scrollX = e.clientX - this.downX
+      if (scrollX < 0 && this.scrollLeft > 0) {
+        this.$refs.screensRef.scrollLeft = this.scrollLeft - scrollX
+      } else {
+        this.$refs.screensRef.scrollLeft = this.scrollLeft - scrollX
+      }
 
-      console.log(e.offsetY, e.offsetX)
-      // this.$nextTick(() => {
-      //   this.$refs.screensRef.scrollTop = this.startPoint.y
-      //   this.$refs.screensRef.scrollLeft = this.startPoint.x
-      // })
+      // 鼠标上下滑动
+      const scrollY = e.clientY - this.downY
+      if (scrollY < 0 && this.scrollTop > 0) {
+        this.$refs.screensRef.scrollTop = this.scrollTop - scrollY
+      } else {
+        this.$refs.screensRef.scrollTop = this.scrollTop - scrollY
+      }
     },
     // 鼠标抬起 计算提示弹窗的位置
     getMouseUp() {
       this.moveFlag = false
-      console.log('getMouseUp')
     }
   },
   mounted() {
@@ -210,6 +221,10 @@ export default Vue.extend({
   height: 3000px;
 
   background: url('~@/assets/imgs/screen.png') repeat;
+
+  &:active {
+    cursor: pointer;
+  }
 }
 
 .scale-value {
@@ -220,8 +235,9 @@ export default Vue.extend({
 
 #canvas {
   position: absolute;
-  top: 50%;
+  top: 40px;
   left: 50%;
+  margin-left: -100px;
   width: 1920px;
   height: 1080px;
   background: lightblue;
