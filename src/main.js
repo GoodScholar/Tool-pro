@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import jquery from 'jquery'
 
 import * as echarts from 'echarts'
 import utils from './utils/util' // 通用方法库
@@ -16,6 +17,8 @@ import './utils/directive' // 引入自定义指令
 // import scroll from 'vue-seamless-scroll'
 
 Vue.prototype.$echarts = echarts
+Vue.prototype.$ = jquery
+
 Vue.config.productionTip = false
 
 Vue.use(utils)

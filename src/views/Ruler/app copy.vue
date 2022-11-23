@@ -26,8 +26,8 @@
       @mousemove="moveFlag && getMouseMove($event)"
       @mouseup="getMouseUp"
     >
-      <div ref="containerRef" id="container" class="screen-container">
-        <div ref="canvas" id="canvas" :style="canvasStyle"></div>
+      <div ref="containerRef" class="screen-container">
+        <div id="canvas" :style="canvasStyle"></div>
       </div>
     </div>
   </div>
@@ -35,7 +35,6 @@
 
 <script>
 import Vue from 'vue'
-import $ from 'jquery'
 import SketchRule from './sketchRuler.vue'
 const rectWidth = 600
 const rectHeight = 320
@@ -59,7 +58,7 @@ export default Vue.extend({
       },
       // 是否隐藏参考线
       cornerActive: false,
-      scale: 2, // 1,
+      scale: 1, // 1,
       startX: 0,
       startY: 0,
       lines: {
@@ -94,11 +93,12 @@ export default Vue.extend({
         height: rectHeight
       }
     },
-    // 生成画布的样式（宽、高）
+    // 生成画布的样式
     canvasStyle() {
       return {
-        width: '3000px',
-        height: '1080px'
+        // width: rectWidth,
+        // height: rectHeight,
+        transform: `scale(${this.scale})`
       }
     }
   },
@@ -182,30 +182,23 @@ export default Vue.extend({
     // 鼠标抬起 计算提示弹窗的位置
     getMouseUp() {
       this.moveFlag = false
-    },
-    setCalc() {
-      const scaleX =
-        $('#screens')[0].clientWidth / $('#canvas')[0].clientWidth - 0.04
-      const scaleY =
-        $('#screens')[0].clientHeight / $('#canvas')[0].clientHeight - 0.04
-
-      // 需要取缩放倍数较小的，因为需要宽高都兼容
-      if (scaleX > scaleY) {
-        $('#canvas').css('transform', `scale(${scaleY})`)
-      } else {
-        $('#canvas').css('transform', `scale(${scaleX})`)
-      }
     }
   },
   mounted() {
-    $('#screens').scrollLeft(
-      ($('#container')[0].clientWidth - $('#screens')[0].clientWidth) / 2
-    )
-    $('#screens').scrollTop(
-      ($('#container')[0].clientHeight - $('#screens')[0].clientHeight) / 2
-    )
+    const screensRef = this.$refs.screensRef
+    const containerRef = this.$refs.containerRef
+    // 滚动居中
+    screensRef.scrollLeft =
+      (containerRef.getBoundingClientRect().width -
+        screensRef.getBoundingClientRect().width) /
+      2
 
-    this.setCalc()
+    screensRef.scrollTop =
+      (containerRef.getBoundingClientRect().height -
+        screensRef.getBoundingClientRect().height) /
+      2
+    // this.$refs.screensRef.scrollTop =
+    //   this.$refs.containerRef.getBoundingClientRect().height / 2 // 300 = #screens.width / 2
   }
 })
 </script>
@@ -216,8 +209,8 @@ export default Vue.extend({
   position: absolute;
   top: 50px;
   left: 50px;
-  width: 1000px;
-  height: 600px;
+  width: 600px;
+  height: 400px;
   border: 1px solid #dadadc;
 }
 
@@ -229,10 +222,10 @@ export default Vue.extend({
 }
 
 .screen-container {
-  @extend %flex-center-center;
-  position: relative;
+  position: absolute;
   width: 5000px;
   height: 3000px;
+
   background: url('~@/assets/imgs/screen.png') repeat;
 
   &:active {
@@ -241,9 +234,13 @@ export default Vue.extend({
 }
 
 #canvas {
-  // width: 1920px;
-  // height: 1080px;
+  // position: absolute;
+  // top: 80px;
+  // left: 50%;
+  width: 1920px;
+  height: 400px;
   background-size: 100% 100%;
   background: lightblue;
+  // transform-origin: 50% 0;
 }
 </style>
