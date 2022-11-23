@@ -212,12 +212,12 @@ export default Vue.extend({
 
 <style lang="scss" scope>
 .wrapper {
-  background-color: #f5f5f5;
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  width: 1000px;
-  height: 600px;
+  position: relative;
+  // position: absolute;
+  // top: 50px;
+  // left: 50px;
+  width: 100vw;
+  height: 100vh;
   border: 1px solid #dadadc;
 }
 

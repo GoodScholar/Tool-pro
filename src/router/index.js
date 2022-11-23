@@ -221,6 +221,15 @@ const routes = [
     }
   },
   {
+    path: '/rulers',
+    name: 'Ruler',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '../views/Vue3Ruler/index.vue'),
+    meta: {
+      title: '低代码'
+    }
+  },
+  {
     path: '/three',
     name: 'ThreeItem',
     component: () =>

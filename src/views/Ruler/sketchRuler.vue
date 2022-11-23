@@ -221,10 +221,6 @@ export default {
   }
 }
 .corner {
-  // position: absolute;
-  // left: 0;
-  // top: 0;
-
   pointer-events: auto;
   cursor: pointer;
   border-right: 1px solid #fff;

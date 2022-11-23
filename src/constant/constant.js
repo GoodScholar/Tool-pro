@@ -120,6 +120,11 @@ export default {
       icon: 'el-icon-menu',
       name: '标尺',
       path: '/ruler'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: 'vue3标尺',
+      path: '/rulers'
     }
   ]
 }
