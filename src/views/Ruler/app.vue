@@ -241,6 +241,7 @@ export default Vue.extend({
 }
 
 #canvas {
+  position: relative;
   // width: 1920px;
   // height: 1080px;
   background-size: 100% 100%;
