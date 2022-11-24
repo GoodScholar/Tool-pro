@@ -4,6 +4,7 @@
   版本：v1.0
 -->
 <template>
+  <!-- 线的显示 -->
   <div
     v-show="showLine"
     class="line"
@@ -41,7 +42,7 @@ export default {
   computed: {
     offset() {
       const offset = (this.startValue - this.start) * this.scale
-
+      this.setShowLine(offset)
       const positionValue = offset + 'px'
       const position = this.vertical
         ? { top: positionValue }

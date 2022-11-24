@@ -16,7 +16,7 @@ export const drawCanvasRuler = (
   selectStart,
   selectLength,
   options,
-  h
+  h // 横向为true,纵向缺省
 ) => {
   const { scale, width, height, ratio, palette } = options
   const { bgColor, fontColor, shadowColor, longfgColor, shortfgColor } = palette

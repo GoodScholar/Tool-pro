@@ -15,8 +15,8 @@
       :select-start="selectStart"
       :select-length="selectLength"
       :palette="palette"
-      :valueNum.sync="valueNum"
-      :showIndicator.sync="showIndicator"
+      v-model:valueNum="valueNum"
+      v-model:showIndicator="showIndicator"
       @onAddLine="handleNewLine"
     ></CanvasRuler>
     <div v-show="isShowReferLine" class="lines">
@@ -67,7 +67,10 @@ export default {
       type: Number,
       default: 0
     },
-    lines: Array,
+    lines: {
+      type: Array,
+      default: () => []
+    },
     selectStart: {
       type: Number
     },
@@ -81,11 +84,19 @@ export default {
   components: { RulerLine, CanvasRuler },
   data() {
     return {
+      curLines: this.lines,
       showIndicator: false,
       valueNum: 0
     }
   },
-  watch: {},
+  watch: {
+    curLines: {
+      handler(newVal) {
+        console.log(newVal)
+      },
+      deep: true
+    }
+  },
   computed: {
     rwClassName() {
       const className = this.vertical ? 'v-container' : 'h-container'
@@ -118,7 +129,7 @@ export default {
   },
   methods: {
     handleNewLine(value) {
-      this.lines.push(value)
+      this.curLines.push(value)
     },
     handleLineRelease(value, index) {
       // 左右或上下超出时, 删除该条对齐线
@@ -127,11 +138,11 @@ export default {
       if (offset < 0 || offset > maxOffset) {
         this.handleLineRemove(index)
       } else {
-        this.lines[index] = value
+        this.curLines[index] = value
       }
     },
     handleLineRemove(index) {
-      this.lines.splice(index, 1)
+      this.curLines.splice(index, 1)
     }
   },
   async created() {},

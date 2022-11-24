@@ -18,7 +18,7 @@
       :select-start="shadow.x"
       :select-length="shadow.width"
       :scale="scale"
-      :palette="palette"
+      :palette="paletteCpu"
     />
     <!-- 竖直方向 -->
     <RulerWrapper
@@ -33,14 +33,9 @@
       :select-start="shadow.y"
       :select-length="shadow.height"
       :scale="scale"
-      :palette="palette"
+      :palette="paletteCpu"
     />
-    <!-- <i
-      class="corner fa"
-      :class="cornerActiveClass"
-      :style="cornerStyle"
-      @click="onCornerClick"
-    ></i> -->
+    <!-- <a class="corner" :style="cornerStyle" @click="onCornerClick"></a> -->
   </div>
 </template>
 
@@ -68,32 +63,7 @@ export default {
       type: Number,
       default: 16
     },
-    palette: {
-      type: Object,
-      default: () => {
-        return {
-          bgColor: 'rgba(225,225,225, 0)', // ruler bg color
-          longfgColor: '#BABBBC', // ruler longer mark color
-          shortfgColor: '#C8CDD0', // ruler shorter mark color
-          fontColor: '#7D8694', // ruler font color
-          shadowColor: '#E8E8E8', // ruler shadow color
-          lineColor: '#EB5648',
-          borderColor: '#DADADC',
-          cornerActiveColor: 'rgb(235, 86, 72, 0.6)',
-          menu: {
-            bgColor: '#fff',
-            dividerColor: '#DBDBDB',
-            listItem: {
-              textColor: '#415058',
-              hoverTextColor: '#298DF8',
-              disabledTextColor: 'rgba(65, 80, 88, 0.4)',
-              bgColor: '#fff',
-              hoverBgColor: '#F2F2F2'
-            }
-          }
-        }
-      }
-    },
+    palette: Object,
     startX: {
       type: Number
     },
@@ -127,11 +97,11 @@ export default {
           h: [],
           v: []
         }
+      },
+      isShowReferLine: {
+        type: Boolean,
+        default: true
       }
-    },
-    isShowReferLine: {
-      type: Boolean,
-      default: true
     }
   },
   components: {
@@ -148,15 +118,59 @@ export default {
     }
   },
   computed: {
-    cornerActiveClass() {
-      return this.isShowReferLine ? 'fa-eye' : 'fa-eye-slash'
+    paletteCpu() {
+      function merge(obj, o) {
+        Object.keys(obj).forEach((key) => {
+          if (key && Object.prototype.hasOwnProperty.call(obj, key)) {
+            if (typeof o.key === 'object') {
+              obj[key] = merge(obj[key], o[key])
+            } else if (Object.prototype.hasOwnProperty.call(o, key)) {
+              obj[key] = o[key]
+            }
+          }
+        })
+        return obj
+      }
+
+      const finalObj = merge(
+        {
+          bgColor: 'rgba(225,225,225, 0)', // ruler bg color
+          longfgColor: '#BABBBC', // ruler longer mark color
+          shortfgColor: '#C8CDD0', // ruler shorter mark color
+          fontColor: '#7D8694', // ruler font color
+          shadowColor: '#E8E8E8', // ruler shadow color
+          lineColor: '#EB5648',
+          borderColor: '#DADADC',
+          cornerActiveColor: 'rgb(235, 86, 72, 0.6)',
+          menu: {
+            bgColor: '#fff',
+            dividerColor: '#DBDBDB',
+            listItem: {
+              textColor: '#415058',
+              hoverTextColor: '#298DF8',
+              disabledTextColor: 'rgba(65, 80, 88, 0.4)',
+              bgColor: '#fff',
+              hoverBgColor: '#F2F2F2'
+            }
+          }
+        },
+        this.palette || {}
+      )
+
+      return finalObj
     },
+    // cornerActiveClass() {
+    //   return this.isShowReferLine ? 'fa-eye' : 'fa-eye-slash'
+    // },
     cornerStyle() {
       return {
+        backgroundImage: this.showReferLine
+          ? `url(${this.eyeIcon || this.eye64})`
+          : `url(${this.closeEyeIcon || this.closeEye64})`,
         width: this.thick + 'px',
         height: this.thick + 'px',
-        borderRight: `1px solid ${this.palette.borderColor}`,
-        borderBottom: `1px solid ${this.palette.borderColor}`
+        borderRight: `1px solid ${this.paletteCpu.borderColor}`,
+        borderBottom: `1px solid ${this.paletteCpu.borderColor}`
       }
     }
   },
@@ -166,7 +180,9 @@ export default {
       this.$emit('onCornerClick', this.showReferLine)
     }
   },
-  async created() {},
+  async created() {
+    this.showReferLine = this.isShowReferLine
+  },
   async mounted() {}
 }
 </script>

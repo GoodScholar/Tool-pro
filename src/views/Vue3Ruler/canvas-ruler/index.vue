@@ -22,10 +22,7 @@ export default {
     showIndicator: Boolean,
     valueNum: Number,
     scale: Number,
-    ratio: {
-      type: Number,
-      default: 1
-    },
+    ratio: Number,
     palette: Object,
     vertical: Boolean,
     start: Number,
