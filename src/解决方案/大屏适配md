@@ -1,0 +1,102 @@
+# 前端 vue 解决按1920*1080设计图做的页面适配屏幕缩放并适配4K屏
+说明
+### 一、首先是适配屏幕的缩放比
+1.在外部创建一个detectZoom.js文件，我是在utils文件夹下
+2.在main.js中引用
+二、解决4k屏幕的问题
+1.获取当前屏幕的分辨率
+2.根据不同屏幕和缩放比来调节zoom的比例
+说明：公司项目做之前没有沟通好，按照1920*1080设计图做的页面，缩放比是100%，项目做完之后说要适配缩放比，并且 适配4k屏，然后就各种百度找办法。
+
+### 一、首先是适配屏幕的缩放比
+这种方法也是通过看别人发布的文章解决的，原来的地址在这：前端 解决笔记本屏幕显示缩放比例125% 150%对页面布局的影响
+我是用的第二种方法，直接就粘过来了。
+
+**1.在外部创建一个detectZoom.js文件，我是在utils文件夹下detectZoom.js文件代码如下：**
+
+```js
+export const detectZoom = () => {
+  let ratio = 0,
+    screen = window.screen,
+    ua = navigator.userAgent.toLowerCase();
+  if (window.devicePixelRatio !== undefined) {
+    ratio = window.devicePixelRatio;
+  } else if (~ua.indexOf('msie')) {
+    if (screen.deviceXDPI && screen.logicalXDPI) {
+      ratio = screen.deviceXDPI / screen.logicalXDPI;
+    }
+  } else if (
+    window.outerWidth !== undefined &&
+    window.innerWidth !== undefined
+  ) {
+    ratio = window.outerWidth / window.innerWidth;
+  }
+  if (ratio) {
+    ratio = Math.round(ratio * 100);
+  }
+  return ratio;
+};
+2.在main.js中引用
+m是获取的当前屏幕的缩放比，在通过zoom属性对应缩放。
+zoom属性用于设置或检索对象的缩放比例。
+```
+
+```js
+import { detectZoom } from '@/utils/detectZoom.js';
+const m = detectZoom();
+document.body.style.zoom = 100 / Number(m);
+以上为解决屏幕缩放比的方法，在屏幕分辨率为1920*1080时可以解决。
+```
+
+### 二、解决4k屏幕的问题
+在项目做完之后突然告知需要适配4k屏，并且4k屏的时候也会有屏幕缩放比，不想重新改页面样式就想了这个办法。也是通过zoom属性，原理就是通过整个body的缩放使系统的展示区域变成1920*1080
+
+**1.获取当前屏幕的分辨率**
+获取屏幕的宽：window.screen.width * window.devicePixelRatio
+获取屏幕的高：window.screen.height * window.devicePixelRatio
+
+**2.根据不同屏幕和缩放比来调节zoom的比例**
+在main.js中 代码如下：
+
+```js
+import { detectZoom } from '@/utils/detectZoom.js';
+
+const m = detectZoom();
+ //判断屏幕是否为4k
+if (window.screen.width * window.devicePixelRatio >=3840) {
+  // switch (m) {
+  //   // 4k屏时屏幕缩放比为100%
+  //   case 100:
+  //     document.body.style.zoom = 100 / 50;
+  //     break;
+  //     // 4k屏时屏幕缩放比为125%
+  //   case 125:
+  //     document.body.style.zoom = 100 / 62.5;
+  //     break;
+  //     // 4k屏时屏幕缩放比为150%
+  //   case 150:
+  //     document.body.style.zoom = 100 / 75;
+  //     break;
+  //     // 4k屏时屏幕缩放比为175%
+  //   case 175:
+  //     document.body.style.zoom = 100 / 87.4715;
+  //     break;
+  //     // 4k屏时屏幕缩放比为200%
+  //   case 200:
+  //     document.body.style.zoom = 100 / 100;
+  //     break;
+  //     // 4k屏时屏幕缩放比为225%
+  //   case 225:
+  //     document.body.style.zoom = 100 / 112.485;
+  //     break;
+
+  //   default:
+  //     break;
+  // }
+  document.body.style.zoom = 100 / (Number(m)/2);
+}else{
+  document.body.style.zoom = 100 / Number(m);
+}
+```
+
+最后结果：虽然屏是4k的，但是系统展示页面的可视区域依旧是1920*1080的，页面样式也没有乱。
