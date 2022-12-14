@@ -442,3 +442,44 @@ erfen (val, arr) {
         return erfen(val,res);//递归
 };
 ```
+
+随机RGB杨色
+
+```js
+const choseRgb = () => {
+    let r = Math.floor(Math.random() * 256)
+    let g = Math.floor(Math.random() * 256)
+    let b = Math.floor(Math.random() * 256)
+    return `rgb(${r},${g},${b})`
+}
+```
+
+# 将时间戳转为时间格式
+
+```js
+    timesTampToTime(timestamp) {
+            var date = new Date(timestamp)
+            var Y = date.getFullYear() + '-'
+            var M =
+                (date.getMonth() + 1 < 10
+                    ? '0' + (date.getMonth() + 1)
+                    : date.getMonth() + 1) + '-'
+            var D =
+                (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) +
+                ' '
+            var h =
+                (date.getHours() < 10
+                    ? '0' + date.getHours()
+                    : date.getHours()) + ':'
+            var m =
+                (date.getMinutes() < 10
+                    ? '0' + date.getMinutes()
+                    : date.getMinutes()) + ':'
+            var s =
+                date.getSeconds() < 10
+                    ? '0' + date.getSeconds()
+                    : date.getSeconds()
+            return Y + M + D + h + m + s
+        },
+```
+

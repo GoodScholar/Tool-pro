@@ -97,8 +97,9 @@ export default Vue.extend({
     // 生成画布的样式（宽、高）
     canvasStyle() {
       return {
-        width: '3000px',
-        height: '1080px'
+        width: '1920px',
+        height: '1080px',
+        transform: `scale(${this.scale})`
       }
     }
   },
@@ -138,8 +139,13 @@ export default Vue.extend({
     handleWheel(e) {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault()
+
+        // const nextScale = parseFloat(
+        //   Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2)
+        // )
+
         const nextScale = parseFloat(
-          Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2)
+          Math.max(0.1, parseFloat(this.scale) - 0.1).toFixed(2)
         )
 
         this.scale = nextScale
@@ -191,8 +197,10 @@ export default Vue.extend({
 
       // 需要取缩放倍数较小的，因为需要宽高都兼容
       if (scaleX > scaleY) {
+        this.scale = scaleY
         $('#canvas').css('transform', `scale(${scaleY})`)
       } else {
+        this.scale = scaleX
         $('#canvas').css('transform', `scale(${scaleX})`)
       }
     }
@@ -205,7 +213,7 @@ export default Vue.extend({
       ($('#container')[0].clientHeight - $('#screens')[0].clientHeight) / 2
     )
 
-    this.setCalc()
+    // this.setCalc()
   }
 })
 </script>
