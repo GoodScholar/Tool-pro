@@ -1,3 +1,35 @@
+# 页面全部置灰
+
+```css
+filter: grayscale(1)
+```
+
+为了使整个网页生效，你可以把它放在 `` 标签的样式里。直接写到 html 文件内，例如：
+
+```html
+<style>
+html {
+  filter: grayscale(1);
+}
+</style>
+```
+
+你也可以用内联样式，只要没用 `important` CSS 语法，内联样式优先级最高：
+
+```html
+<html style="filter:grayscale(1)">
+...
+</html>
+```
+
+为了更好的兼容性，你可以补一个带 `-webkit-` 前缀的样式，放在 `filter` 后面：
+
+```html
+<html style="filter:grayscale(1);-webkit-filter:grayscale(1)">
+...
+</html>
+```
+
 # 颜色HEX透明度设置 免转换
 
 ```css
