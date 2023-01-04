@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       menu: [],
-      activeIndex: '/panorama',
+      activeIndex: '/home/panorama',
       isCollapse: false
     }
   },

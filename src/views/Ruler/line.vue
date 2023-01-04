@@ -6,8 +6,10 @@
     @mousedown="handleDown"
   >
     <div class="action" :style="actionStyle">
-      <span class="del" @click="this.handleRemove">&times;</span>
       <span class="value">{{ startValue }}</span>
+      <span class="del" :style="delStyle" @click="this.handleRemove">
+        &times;
+      </span>
     </div>
   </div>
 </template>
@@ -68,6 +70,12 @@ export default {
         ? { left: this.thick + 'px', color: this.palette.fontColor }
         : { top: this.thick + 'px', color: this.palette.fontColor }
       return actionStyle
+    },
+    delStyle() {
+      const delStyle = {
+        color: this.palette.lineColor
+      }
+      return delStyle
     }
   },
   methods: {
@@ -109,19 +117,23 @@ export default {
   .action {
     position: absolute;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-left: 20px;
+  }
+
+  .del {
+    font-size: 34px;
+    // color: #3c7eff;
+    visibility: hidden;
+    cursor: pointer;
   }
 
   .value {
     pointer-events: none;
-    transform: scale(0.83);
   }
-  .del {
-    cursor: pointer;
-    padding: 3px 5px;
-    visibility: hidden;
-  }
+
   &:hover .del {
     visibility: visible;
   }

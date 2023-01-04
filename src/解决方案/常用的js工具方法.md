@@ -1,5 +1,16 @@
 # js的工具方法集合
 
+#  移动端获取终端
+
+```js
+ <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+ <script>
+        var vConsole = new VConsole()
+ </script>
+```
+
+
+
 ### 计算距离下次生日还有多少天
 
 注意这里借助 [moment](https://link.juejin.cn?target=http%3A%2F%2Fmomentjs.cn%2F) 实现
@@ -269,7 +280,8 @@ let blob = new Blob([buffer])
 ```js
 // base64转文件流
 bTof(data, fileName) {
-    const byteString = window.atob(data)
+    const arr = data.split(',')
+    const byteString = window.atob(arr[1])
     const options = {
         type: 'image/jpeg',
         endings: 'native',
@@ -480,6 +492,28 @@ const choseRgb = () => {
                     ? '0' + date.getSeconds()
                     : date.getSeconds()
             return Y + M + D + h + m + s
+        },
+```
+
+旋转图片
+
+```
+ turnImage(src) {
+            const img = new Image()
+            img.src = src
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            const promise = new Promise((resolve) => {
+                img.onload = () => {
+                    canvas.width = img.height
+                    canvas.height = img.width
+                    ctx.translate(0, canvas.height)
+                    ctx.rotate((Math.PI * 3) / 2)
+                    ctx.drawImage(img, 0, 0, img.width, img.height)
+                    resolve(canvas.toDataURL('image/png'))
+                }
+            })
+            return promise
         },
 ```
 

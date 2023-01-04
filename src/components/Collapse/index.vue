@@ -48,7 +48,7 @@ export default {
     },
     collapseEnter(el, done) {
       // console.log('22, collapseEnter');
-      //
+
       this.oldOverflow = el.style.overflow
       const elHeight = el.scrollHeight
       // 过渡效果进入后将元素的maxHeight设置为元素本身的高度，将元素maxHeight设置为auto不会有过渡效果

@@ -368,11 +368,47 @@ option = {
 
 ⑨ 修改**表格鼠标悬浮**`hover`背景色
 
-```css
+```##css
 ::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
     background-color: pink;
 }
 ```
 
+## 呼吸灯
 
+```html
+<div class="breathe-div"></div>
+```
+
+```css
+.breathe-div {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #2b92d4;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    margin:150px auto;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-name: breathe;
+    -webkit-animation-duration: 1500ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+}
+
+@-webkit-keyframes breathe {
+    0% {
+        opacity: .4;
+        box-shadow: 0 1px 2px rgba(0, 147, 223, 0.4), 0 1px 1px rgba(0, 147, 223, 0.1) inset;
+    }
+
+    100% {
+        opacity: 1;
+        border: 1px solid rgba(59, 235, 235, 0.7);
+        box-shadow: 0 1px 30px #0093df, 0 1px 20px #0093df inset;
+    }
+}
+```
 

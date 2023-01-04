@@ -5,6 +5,14 @@
 -->
 <template>
   <div class="">
+    <div>
+      <el-button type="primary" @click="expend = !expend">切换</el-button>
+
+      <Collapse>
+        <div v-show="expend">1312312</div>
+      </Collapse>
+    </div>
+
     <el-button type="primary" @click="detailVisible = true">
       点击打开 Dialog
     </el-button>
@@ -76,7 +84,7 @@
 
     <div>
       <!-- 流动边框 -->
-      <button>
+      <div class="flowBorder">
         click me ❤️
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
           <path
@@ -87,7 +95,7 @@
             d="M 0.0 0 L 200 0 L 200 100 L 0.00 100 L 0.00 0"
           />
         </svg>
-      </button>
+      </div>
     </div>
 
     <div>
@@ -122,6 +130,8 @@ import FormPlus from '@/components/FormPlus'
 import ThrottlingSelect from '@/components/ThrottlingSelect'
 import circleMenus from '@/components/circleMenus'
 
+import Collapse from '../../components/Collapse'
+
 export default {
   name: 'SecondaryEncapsulation',
   props: {},
@@ -131,10 +141,12 @@ export default {
     OptionPlus,
     FormPlus,
     ThrottlingSelect,
-    circleMenus
+    circleMenus,
+    Collapse
   },
   data() {
     return {
+      expend: true,
       detailVisible: false,
       value: null,
       selectVal: null,
@@ -355,7 +367,7 @@ svg {
   display: block;
   border-radius: 5px;
 }
-button {
+.flowBorder {
   font-family: monospace;
   color: #fff;
   line-height: 1;

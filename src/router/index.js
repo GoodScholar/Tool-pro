@@ -11,16 +11,16 @@ VueRouter.prototype.push = function push(location) {
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   redirect: {
-  //     name: 'home'
-  //   }
-  // },
   {
     path: '/',
+    name: 'LoginIndex',
+    component: () =>
+      import(/* webpackChunkName: "LoginIndex" */ '../views/Login')
+  },
+  {
+    path: '/home',
     name: 'HomeIndex',
-    redirect: '/panorama',
+    redirect: '/home/panorama',
     component: () =>
       import(/* webpackChunkName: "HomeIndex" */ '@/views/Home/layout.vue'),
     children: [
@@ -203,15 +203,6 @@ const routes = [
     }
   },
   {
-    path: '/fit',
-    name: 'ScreenFit',
-    component: () =>
-      import(/* webpackChunkName: "LowCode" */ '../views/ScreenFit'),
-    meta: {
-      title: '低代码'
-    }
-  },
-  {
     path: '/ruler',
     name: 'Ruler',
     component: () =>
@@ -222,11 +213,20 @@ const routes = [
   },
   {
     path: '/rulers',
-    name: 'Ruler',
+    name: 'RulerS',
     component: () =>
       import(/* webpackChunkName: "LowCode" */ '../views/Vue3Ruler/index.vue'),
     meta: {
       title: '低代码'
+    }
+  },
+  {
+    path: '/fit',
+    name: 'ScreenFit',
+    component: () =>
+      import(/* webpackChunkName: "LowCode" */ '../views/ScreenFit'),
+    meta: {
+      title: '自适应'
     }
   },
   {
