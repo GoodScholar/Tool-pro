@@ -12,7 +12,7 @@
       },
       className
     ]"
-    @mousedown="elementMouseDown"
+    @mousedown.self="elementMouseDown"
     @touchstart="elementTouchDown"
   >
     <div
@@ -71,18 +71,22 @@ export default {
   replace: true,
   name: 'vue-draggable-resizable',
   props: {
+    // 类名
     className: {
       type: String,
       default: 'vdr'
     },
+    // 类名可拖动
     classNameDraggable: {
       type: String,
       default: 'draggable'
     },
+    // 类名可调整大小
     classNameResizable: {
       type: String,
       default: 'resizable'
     },
+    // 类名称活动
     classNameDragging: {
       type: String,
       default: 'dragging'
@@ -111,14 +115,17 @@ export default {
       type: Boolean,
       default: false
     },
+    // 是否被选中
     active: {
       type: Boolean,
       default: false
     },
+    // 是否被拖拽
     draggable: {
       type: Boolean,
       default: true
     },
+    // 是否调整大小
     resizable: {
       type: Boolean,
       default: true
@@ -127,6 +134,7 @@ export default {
       type: Boolean,
       default: false
     },
+    // 默认宽度 200
     w: {
       type: [Number, String],
       default: 200,
@@ -137,6 +145,7 @@ export default {
         return val === 'auto'
       }
     },
+    // 默认高度 200
     h: {
       type: [Number, String],
       default: 200,
@@ -147,39 +156,47 @@ export default {
         return val === 'auto'
       }
     },
+    // 最小宽度
     minWidth: {
       type: Number,
       default: 0,
       validator: (val) => val >= 0
     },
+    // 最小高度
     minHeight: {
       type: Number,
       default: 0,
       validator: (val) => val >= 0
     },
+    // 最大宽度
     maxWidth: {
       type: Number,
       default: null,
       validator: (val) => val >= 0
     },
+    // 最大高度
     maxHeight: {
       type: Number,
       default: null,
       validator: (val) => val >= 0
     },
+    // 组件方位 x轴
     x: {
       type: Number,
       default: 0
     },
+    // 组件方位 y轴
     y: {
       type: Number,
       default: 0
     },
+    // 组件方位 x轴
     z: {
       type: [String, Number],
       default: 'auto',
       validator: (val) => (typeof val === 'string' ? val === 'auto' : val >= 0)
     },
+    //
     handles: {
       type: Array,
       default: () => ['tl', 'tm', 'tr', 'mr', 'br', 'bm', 'bl', 'ml'],
@@ -231,9 +248,20 @@ export default {
       type: Function,
       default: () => true
     },
+    //
     onResize: {
       type: Function,
       default: () => true
+    },
+    // 多选
+    selected: {
+      type: Boolean,
+      default: false
+    },
+    // 是否开启多选
+    multiSelect: {
+      type: Boolean,
+      default: false
     }
   },
   data: function () {
@@ -322,7 +350,6 @@ export default {
   },
   watch: {
     active(val) {
-      console.log(val)
       this.enabled = val
       if (val) {
         this.$emit('activated')
@@ -330,6 +357,15 @@ export default {
         this.$emit('deactivated')
       }
     },
+    // selected(val) {
+    //   console.log(val)
+    //   this.enabled = val
+    //   if (val) {
+    //     this.$emit('activated')
+    //   } else {
+    //     this.$emit('deactivated')
+    //   }
+    // },
     z(val) {
       if (val >= 0 || val === 'auto') {
         this.zIndex = val
@@ -445,11 +481,25 @@ export default {
           this.dragging = false
           return
         }
-        if (!this.enabled) {
+        // todo 13121
+        if (e.ctrlKey && e.which === 1) {
+          // ctrl + 鼠标左键组合键触发
+          // console.log('多选')
+        } else if (e.which === 1) {
+          // 触发鼠标左键
+          // console.log('单选')
           this.enabled = true
           this.$emit('activated')
           this.$emit('update:active', true)
         }
+        // if (!this.multiSelect && !this.enabled) {
+        //   console.log('单选')
+        //   this.enabled = true
+        //   this.$emit('activated', e)
+        //   this.$emit('update:active', true)
+        // } else {
+        //   console.log('多选')
+        // }
         if (this.draggable) {
           this.dragEnable = true
         }
@@ -507,12 +557,15 @@ export default {
       const target = e.target || e.srcElement
       const regex = new RegExp(this.className + '-([trmbl]{2})', '')
       if (!this.$el.contains(target) && !regex.test(target.className)) {
-        console.log(this.enabled, !this.preventDeactivation)
-        // if (this.enabled && !this.preventDeactivation) {
-        //   this.enabled = false
-        //   this.$emit('deactivated')
-        //   this.$emit('update:active', false)
-        // }
+        if (this.enabled && !this.preventDeactivation && !this.multiSelect) {
+          console.log('单选')
+          this.enabled = false
+          this.$emit('deactivated')
+          this.$emit('update:active', false)
+        } else {
+          console.log('多选')
+        }
+
         removeEvent(document.documentElement, eventsFor.move, this.handleResize)
       }
       this.resetBoundsAndMouseState()
@@ -863,9 +916,17 @@ export default {
         this.$emit('dragstop', this.left, this.top)
       }
       removeEvent(document.documentElement, eventsFor.move, this.handleResize)
+    },
+    //
+    onClickOutside() {
+      console.log('onClickOutside')
+
+      this.$nextTick(() => {
+        this.deselect()
+      })
     }
   },
-  created: function () {
+  created() {
     // eslint-disable-next-line
     if (this.maxWidth && this.minWidth > this.maxWidth) {
       console.warn(
@@ -880,7 +941,7 @@ export default {
     }
     this.resetBoundsAndMouseState()
   },
-  mounted: function () {
+  mounted() {
     if (!this.enableNativeDrag) {
       this.$el.ondragstart = () => false
     }
@@ -895,20 +956,23 @@ export default {
     this.height = this.h !== 'auto' ? this.h : height
     this.right = this.parentWidth - this.width - this.left
     this.bottom = this.parentHeight - this.height - this.top
+
     if (this.active) {
       this.$emit('activated')
     }
-    addEvent(document.documentElement, 'mousedown', this.deselect)
+
+    // addEvent(document.documentElement, 'mousedown', this.deselect)
     addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
     addEvent(window, 'resize', this.checkParentSize)
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     removeEvent(document.documentElement, 'mousedown', this.deselect)
+    removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+
     removeEvent(document.documentElement, 'touchstart', this.handleUp)
     removeEvent(document.documentElement, 'mousemove', this.move)
     removeEvent(document.documentElement, 'touchmove', this.move)
     removeEvent(document.documentElement, 'mouseup', this.handleUp)
-    removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
     removeEvent(window, 'resize', this.checkParentSize)
   }
 }

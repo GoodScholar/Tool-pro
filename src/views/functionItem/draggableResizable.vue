@@ -11,8 +11,9 @@
         :parent="true"
         :min-width="200"
         :min-height="200"
-        :active="item.activated"
-        @activated="activated(index)"
+        :multiSelect="false"
+        :selected="item.selected"
+        @activated="activated($event, index)"
       >
         <p>vue-drag111111</p>
       </vue-draggable-resizable>
@@ -35,21 +36,22 @@ export default {
           x: 0,
           y: 0,
           name: '测试1',
-          activated: false
+          selected: false
         },
         {
           x: 300,
           y: 0,
           name: '测试2',
-          activated: false
+          selected: false
         }
       ]
     }
   },
   methods: {
     activated(index) {
-      // console.log(this.arr[index].activated, !this.arr[index].activated)
-      // this.arr[index].activated = !this.arr[index].activated
+      console.log(index)
+      // console.log(this.arr[index].selected, !this.arr[index].selected)
+      // this.arr[index].selected = !this.arr[index].selected
     }
   }
 }
