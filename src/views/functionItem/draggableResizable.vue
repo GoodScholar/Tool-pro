@@ -14,6 +14,7 @@
         :multiSelect="false"
         :selected="item.selected"
         @activated="activated($event, index)"
+        @deactivated="deactivated($event, index)"
       >
         <p>vue-drag111111</p>
       </vue-draggable-resizable>
@@ -48,10 +49,31 @@ export default {
     }
   },
   methods: {
-    activated(index) {
-      console.log(index)
-      // console.log(this.arr[index].selected, !this.arr[index].selected)
-      // this.arr[index].selected = !this.arr[index].selected
+    // 选中
+    activated(e, index) {
+      console.log('activated', e, index)
+
+      if (e === 'radio') {
+        this.arr.forEach((item) => {
+          item.selected = false
+        })
+        this.arr[index].selected = true
+      } else {
+        this.arr[index].selected = true
+      }
+    },
+    // 取消选中
+    deactivated(e, index) {
+      console.log('deactivated', e, index)
+      // if (e === 'check') {
+      //   this.arr[index].selected = false
+      // }
+
+      if (e === 'all') {
+        this.arr.forEach((item) => {
+          item.selected = false
+        })
+      }
     }
   }
 }

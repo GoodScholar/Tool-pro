@@ -1,7 +1,6 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
   <div
-    v-clickoutside="onClickOutside"
     :style="style"
     :class="[
       {
@@ -358,9 +357,6 @@ export default {
         this.$emit('deactivated')
       }
     },
-    selected(val) {
-      this.enabled = val
-    },
     z(val) {
       if (val >= 0 || val === 'auto') {
         this.zIndex = val
@@ -476,17 +472,25 @@ export default {
           this.dragging = false
           return
         }
-        // todo 单选和多选
+        // todo 13121
         if (e.ctrlKey && e.which === 1) {
           // ctrl + 鼠标左键组合键触发
-          this.$emit('activated', 'check')
+          console.log('多选')
         } else if (e.which === 1) {
           // 触发鼠标左键
-          // this.enabled = true
-          this.$emit('activated', 'radio')
-          // this.$emit('update:active', true)
+          console.log('单选')
+          this.enabled = true
+          this.$emit('activated')
+          this.$emit('update:active', true)
         }
-
+        // if (!this.multiSelect && !this.enabled) {
+        //   console.log('单选')
+        //   this.enabled = true
+        //   this.$emit('activated', e)
+        //   this.$emit('update:active', true)
+        // } else {
+        //   console.log('多选')
+        // }
         if (this.draggable) {
           this.dragEnable = true
         }
@@ -545,15 +549,25 @@ export default {
       const regex = new RegExp(this.className + '-([trmbl]{2})', '')
       if (!this.$el.contains(target) && !regex.test(target.className)) {
         // todo
+
         if (e.ctrlKey && e.which === 1) {
           // ctrl + 鼠标左键组合键触发
-          this.$emit('deactivated', 'check')
+          console.log('多选')
         } else if (e.which === 1) {
           // 触发鼠标左键
-          // this.enabled = false
-          this.$emit('deactivated', 'radio')
-          // this.$emit('update:active', false)
+          console.log('单选')
+          this.enabled = false
+          this.$emit('deactivated')
+          this.$emit('update:active', false)
         }
+        // if (this.enabled && !this.preventDeactivation) {
+        //   console.log('单选')
+        //   this.enabled = false
+        //   this.$emit('deactivated')
+        //   this.$emit('update:active', false)
+        // } else {
+        //   console.log('多选')
+        // }
 
         removeEvent(document.documentElement, eventsFor.move, this.handleResize)
       }
@@ -571,7 +585,8 @@ export default {
         return
       }
       if (e.stopPropagation) e.stopPropagation()
-
+      // Here we avoid a dangerous recursion by faking
+      // corner handles as middle handles
       if (this.lockAspectRatio && !handle.includes('m')) {
         this.handle = 'm' + handle.substring(1)
       } else {
@@ -754,6 +769,7 @@ export default {
       this.dragging = true
     },
     moveHorizontally(val) {
+      // should calculate with scale 1.
       const [deltaX, _] = snapToGrid(this.grid, val, this.top, 1)
       const left = restrictToBounds(
         deltaX,
@@ -764,6 +780,7 @@ export default {
       this.right = this.parentWidth - this.width - left
     },
     moveVertically(val) {
+      // should calculate with scale 1.
       const [_, deltaY] = snapToGrid(this.grid, this.left, val, 1)
       const top = restrictToBounds(
         deltaY,
@@ -850,6 +867,8 @@ export default {
       this.resizing = true
     },
     changeWidth(val) {
+      // should calculate with scale 1.
+      // eslint-disable-next-line no-unused-vars
       const [newWidth, _] = snapToGrid(this.grid, val, 0, 1)
       const right = restrictToBounds(
         this.parentWidth - newWidth - this.left,
@@ -868,6 +887,7 @@ export default {
       this.height = height
     },
     changeHeight(val) {
+      // should calculate with scale 1.
       const [_, newHeight] = snapToGrid(this.grid, 0, val, 1)
       const bottom = restrictToBounds(
         this.parentHeight - newHeight - this.top,
@@ -904,15 +924,9 @@ export default {
     onClickOutside() {
       console.log('onClickOutside')
 
-      this.$emit('deactivated', 'all')
-
-      // if (e.ctrlKey && e.which === 1) {
-      //   // ctrl + 鼠标左键组合键触发
-      //   this.$emit('deactivated', 'check')
-      // } else if (e.which === 1) {
-      //   // 触发鼠标左键
-      //   this.$emit('deactivated', 'radio')
-      // }
+      this.$nextTick(() => {
+        this.deselect()
+      })
     }
   },
   created() {
@@ -946,17 +960,17 @@ export default {
     this.right = this.parentWidth - this.width - this.left
     this.bottom = this.parentHeight - this.height - this.top
 
-    // if (this.active) {
-    //   this.$emit('activated')
-    // }
+    if (this.active) {
+      this.$emit('activated')
+    }
 
-    // addEvent(document.documentElement, 'mousedown', this.deselect)
-    // addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    addEvent(document.documentElement, 'mousedown', this.deselect)
+    addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
     addEvent(window, 'resize', this.checkParentSize)
   },
   beforeDestroy() {
-    // removeEvent(document.documentElement, 'mousedown', this.deselect)
-    // removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    removeEvent(document.documentElement, 'mousedown', this.deselect)
+    removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
 
     removeEvent(document.documentElement, 'touchstart', this.handleUp)
     removeEvent(document.documentElement, 'mousemove', this.move)
