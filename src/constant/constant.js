@@ -132,6 +132,11 @@ export default {
       icon: 'el-icon-menu',
       name: '自适应',
       path: '/fit'
+    },
+    {
+      icon: 'el-icon-menu',
+      name: '自动拖拽',
+      path: '/resize'
     }
   ]
 }

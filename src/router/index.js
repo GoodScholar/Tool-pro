@@ -230,6 +230,17 @@ const routes = [
     }
   },
   {
+    path: '/resize',
+    name: 'DragResize',
+    component: () =>
+      import(
+        /* webpackChunkName: "DragResize" */ '../views/functionItem/draggableResizable.vue'
+      ),
+    meta: {
+      title: '拖拽'
+    }
+  },
+  {
     path: '/three',
     name: 'ThreeItem',
     component: () =>
