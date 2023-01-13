@@ -1,7 +1,7 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
+  <!--     v-clickoutside="!multiSelect && onClickOutSide" -->
   <div
-    v-clickoutside="onClickOutside"
     :style="style"
     :class="[
       {
@@ -254,16 +254,16 @@ export default {
       type: Function,
       default: () => true
     },
+    // 默认只能单选  true表示开启单选和多选
+    multiSelect: {
+      type: Boolean,
+      default: false
+    },
     // 多选
     selected: {
       type: Boolean,
       default: false
     }
-    // 是否开启多选
-    // multiSelect: {
-    //   type: Boolean,
-    //   default: false
-    // }
   },
   data: function () {
     return {
@@ -476,15 +476,20 @@ export default {
           this.dragging = false
           return
         }
-        // todo 单选和多选
-        if (e.ctrlKey && e.which === 1) {
-          // ctrl + 鼠标左键组合键触发
-          this.$emit('activated', 'check')
-        } else if (e.which === 1) {
-          // 触发鼠标左键
-          // this.enabled = true
-          this.$emit('activated', 'radio')
-          // this.$emit('update:active', true)
+
+        if (this.multiSelect) {
+          // todo 单选和多选
+          if (e.ctrlKey && e.which === 1) {
+            // ctrl + 鼠标左键组合键触发
+            this.$emit('activated', 'check')
+          } else if (e.which === 1) {
+            // 触发鼠标左键
+            this.$emit('activated', 'radio')
+          }
+        } else {
+          this.enabled = true
+          this.$emit('activated')
+          this.$emit('update:active', true)
         }
 
         if (this.draggable) {
@@ -540,29 +545,31 @@ export default {
           this.bottom
       }
     },
+    // 点击别处
+    onClickOutSide() {
+      this.enabled = false
+      this.$emit('update:active', false)
+    },
     deselect(e) {
       const target = e.target || e.srcElement
       const regex = new RegExp(this.className + '-([trmbl]{2})', '')
       if (!this.$el.contains(target) && !regex.test(target.className)) {
-        // todo
-        if (e.ctrlKey && e.which === 1) {
-          // ctrl + 鼠标左键组合键触发
-          this.$emit('deactivated', 'check')
-        } else if (e.which === 1) {
-          // 触发鼠标左键
-          // this.enabled = false
-          this.$emit('deactivated', 'radio')
-          // this.$emit('update:active', false)
+        if (this.enabled && !this.preventDeactivation) {
+          this.enabled = false
+          this.$emit('deactivated')
+          this.$emit('update:active', false)
         }
 
         removeEvent(document.documentElement, eventsFor.move, this.handleResize)
       }
       this.resetBoundsAndMouseState()
     },
+    // 处理触摸点击
     handleTouchDown(handle, e) {
       eventsFor = events.touch
       this.handleDown(handle, e)
     },
+    // 处理触摸点击
     handleDown(handle, e) {
       if (e instanceof MouseEvent && e.which !== 1) {
         return
@@ -899,30 +906,14 @@ export default {
         this.$emit('dragstop', this.left, this.top)
       }
       removeEvent(document.documentElement, eventsFor.move, this.handleResize)
-    },
-    //
-    onClickOutside() {
-      console.log('onClickOutside')
-
-      this.$emit('deactivated', 'all')
-
-      // if (e.ctrlKey && e.which === 1) {
-      //   // ctrl + 鼠标左键组合键触发
-      //   this.$emit('deactivated', 'check')
-      // } else if (e.which === 1) {
-      //   // 触发鼠标左键
-      //   this.$emit('deactivated', 'radio')
-      // }
     }
   },
   created() {
-    // eslint-disable-next-line
     if (this.maxWidth && this.minWidth > this.maxWidth) {
       console.warn(
         '[Vdr warn]: Invalid prop: minWidth cannot be greater than maxWidth'
       )
     }
-    // eslint-disable-next-line
     if (this.maxHeight && this.minHeight > this.maxHeight) {
       console.warn(
         '[Vdr warn]: Invalid prop: minHeight cannot be greater than maxHeight'
@@ -946,17 +937,28 @@ export default {
     this.right = this.parentWidth - this.width - this.left
     this.bottom = this.parentHeight - this.height - this.top
 
-    // if (this.active) {
-    //   this.$emit('activated')
-    // }
+    if (this.active) {
+      this.$emit('activated')
+    }
 
-    // addEvent(document.documentElement, 'mousedown', this.deselect)
-    // addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    // 默认单选执行
+    if (!this.multiSelect) {
+      addEvent(document.documentElement, 'mousedown', this.deselect)
+      addEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    }
+
     addEvent(window, 'resize', this.checkParentSize)
   },
   beforeDestroy() {
-    // removeEvent(document.documentElement, 'mousedown', this.deselect)
-    // removeEvent(document.documentElement, 'touchend touchcancel', this.deselect)
+    // 默认单选执行
+    if (!this.multiSelect) {
+      removeEvent(document.documentElement, 'mousedown', this.deselect)
+      removeEvent(
+        document.documentElement,
+        'touchend touchcancel',
+        this.deselect
+      )
+    }
 
     removeEvent(document.documentElement, 'touchstart', this.handleUp)
     removeEvent(document.documentElement, 'mousemove', this.move)

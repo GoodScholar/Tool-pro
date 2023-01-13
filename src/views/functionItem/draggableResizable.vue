@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="divContainer">
+    <div class="divContainer" ref="boxRef" @click.stop.self="cancelSelect">
       <vue-draggable-resizable
         v-for="(item, index) in arr"
         :key="index"
@@ -11,10 +11,9 @@
         :parent="true"
         :min-width="200"
         :min-height="200"
-        :multiSelect="false"
+        :multiSelect="true"
         :selected="item.selected"
         @activated="activated($event, index)"
-        @deactivated="deactivated($event, index)"
       >
         <p>vue-drag111111</p>
       </vue-draggable-resizable>
@@ -50,30 +49,27 @@ export default {
   },
   methods: {
     // 选中
-    activated(e, index) {
-      console.log('activated', e, index)
-
-      if (e === 'radio') {
-        this.arr.forEach((item) => {
-          item.selected = false
-        })
-        this.arr[index].selected = true
-      } else {
-        this.arr[index].selected = true
+    activated(type, index) {
+      switch (type) {
+        case 'radio':
+          this.arr.forEach((item) => {
+            item.selected = false
+          })
+          this.arr[index].selected = !this.arr[index].selected
+          break
+        case 'check':
+          this.arr[index].selected = !this.arr[index].selected
+          break
+        default:
+          console.log('默认单选')
+          break
       }
     },
     // 取消选中
-    deactivated(e, index) {
-      console.log('deactivated', e, index)
-      // if (e === 'check') {
-      //   this.arr[index].selected = false
-      // }
-
-      if (e === 'all') {
-        this.arr.forEach((item) => {
-          item.selected = false
-        })
-      }
+    cancelSelect() {
+      this.arr.forEach((item) => {
+        item.selected = false
+      })
     }
   }
 }
