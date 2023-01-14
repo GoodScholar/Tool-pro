@@ -1,5 +1,16 @@
 # js的工具方法集合
 
+#  移动端获取终端
+
+```js
+ <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+ <script>
+        var vConsole = new VConsole()
+ </script>
+```
+
+
+
 ### 计算距离下次生日还有多少天
 
 注意这里借助 [moment](https://link.juejin.cn?target=http%3A%2F%2Fmomentjs.cn%2F) 实现
@@ -269,7 +280,8 @@ let blob = new Blob([buffer])
 ```js
 // base64转文件流
 bTof(data, fileName) {
-    const byteString = window.atob(data)
+    const arr = data.split(',')
+    const byteString = window.atob(arr[1])
     const options = {
         type: 'image/jpg',
         endings: 'native',
@@ -442,3 +454,66 @@ erfen (val, arr) {
         return erfen(val,res);//递归
 };
 ```
+
+随机RGB杨色
+
+```js
+const choseRgb = () => {
+    let r = Math.floor(Math.random() * 256)
+    let g = Math.floor(Math.random() * 256)
+    let b = Math.floor(Math.random() * 256)
+    return `rgb(${r},${g},${b})`
+}
+```
+
+# 将时间戳转为时间格式
+
+```js
+    timesTampToTime(timestamp) {
+            var date = new Date(timestamp)
+            var Y = date.getFullYear() + '-'
+            var M =
+                (date.getMonth() + 1 < 10
+                    ? '0' + (date.getMonth() + 1)
+                    : date.getMonth() + 1) + '-'
+            var D =
+                (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) +
+                ' '
+            var h =
+                (date.getHours() < 10
+                    ? '0' + date.getHours()
+                    : date.getHours()) + ':'
+            var m =
+                (date.getMinutes() < 10
+                    ? '0' + date.getMinutes()
+                    : date.getMinutes()) + ':'
+            var s =
+                date.getSeconds() < 10
+                    ? '0' + date.getSeconds()
+                    : date.getSeconds()
+            return Y + M + D + h + m + s
+        },
+```
+
+旋转图片
+
+```
+ turnImage(src) {
+            const img = new Image()
+            img.src = src
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            const promise = new Promise((resolve) => {
+                img.onload = () => {
+                    canvas.width = img.height
+                    canvas.height = img.width
+                    ctx.translate(0, canvas.height)
+                    ctx.rotate((Math.PI * 3) / 2)
+                    ctx.drawImage(img, 0, 0, img.width, img.height)
+                    resolve(canvas.toDataURL('image/png'))
+                }
+            })
+            return promise
+        },
+```
+

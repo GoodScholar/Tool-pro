@@ -103,6 +103,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
 body {
   padding: 0;

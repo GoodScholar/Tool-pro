@@ -4,8 +4,8 @@
       :lang="lang"
       :thick="thick"
       :scale="scale"
-      :width="582"
-      :height="482"
+      :width="rulerWH.width"
+      :height="rulerWH.height"
       :startX="startX"
       :startY="startY"
       :shadow="shadow"
@@ -17,14 +17,14 @@
       @onCornerClick="handleCornerClick"
     ></SketchRule>
 
+    <!--  @mousedown="getMouseDown"
+      @mousemove="moveFlag && getMouseMove($event)"
+      @mouseup="getMouseUp" -->
     <div
       ref="screensRef"
       id="screens"
       @wheel="handleWheel"
       @scroll="handleScroll"
-      @mousedown="getMouseDown"
-      @mousemove="moveFlag && getMouseMove($event)"
-      @mouseup="getMouseUp"
     >
       <div ref="containerRef" id="container" class="screen-container">
         <div ref="canvas" id="canvas" :style="canvasStyle"></div>
@@ -35,16 +35,19 @@
 
 <script>
 import Vue from 'vue'
-import $ from 'jquery'
 import SketchRule from './sketchRuler.vue'
-const rectWidth = 600
-const rectHeight = 320
+const rectWidth = 1920
+const rectHeight = 1080
 export default Vue.extend({
   components: {
     SketchRule
   },
   data() {
     return {
+      rulerWH: {
+        width: '',
+        height: ''
+      },
       midDate: {
         h: [],
         v: []
@@ -54,12 +57,12 @@ export default Vue.extend({
         longfgColor: '#fff', // ruler longer mark color 标尺刻度长标记颜色
         shortfgColor: '#fff', // ruler shorter mark color 标尺刻度短标记颜色
         fontColor: '#fff', // ruler font color 标尺字体颜色
-        lineColor: '#EB5648', // 辅助线颜色
+        lineColor: '#3c7eff', // 辅助线颜色
         borderColor: 'transparent' // 边框颜色
       },
       // 是否隐藏参考线
       cornerActive: false,
-      scale: 2, // 1,
+      scale: 0.75, // 1,
       startX: 0,
       startY: 0,
       lines: {
@@ -97,8 +100,9 @@ export default Vue.extend({
     // 生成画布的样式（宽、高）
     canvasStyle() {
       return {
-        width: '3000px',
-        height: '1080px'
+        width: '1920px',
+        height: '1080px',
+        transform: `scale(${this.scale})`
       }
     }
   },
@@ -138,9 +142,14 @@ export default Vue.extend({
     handleWheel(e) {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault()
+
         const nextScale = parseFloat(
           Math.max(0.2, this.scale - e.deltaY / 500).toFixed(2)
         )
+
+        // const nextScale = parseFloat(
+        //   Math.max(0.1, parseFloat(this.scale) - 0.1).toFixed(2)
+        // )
 
         this.scale = nextScale
       }
@@ -183,29 +192,39 @@ export default Vue.extend({
     getMouseUp() {
       this.moveFlag = false
     },
-    setCalc() {
-      const scaleX =
-        $('#screens')[0].clientWidth / $('#canvas')[0].clientWidth - 0.04
-      const scaleY =
-        $('#screens')[0].clientHeight / $('#canvas')[0].clientHeight - 0.04
 
-      // 需要取缩放倍数较小的，因为需要宽高都兼容
-      if (scaleX > scaleY) {
-        $('#canvas').css('transform', `scale(${scaleY})`)
-      } else {
-        $('#canvas').css('transform', `scale(${scaleX})`)
+    getScale() {
+      // 固定好16：9的宽高比，计算出最合适的缩放比
+      const screens = this.$refs.screensRef
+      const canvas = this.$refs.canvas
+      const container = this.$refs.containerRef
+
+      screens.scrollLeft =
+        (container.clientWidth - screens.clientWidth - 20) / 2
+      screens.scrollTop =
+        (container.clientHeight - screens.clientHeight - 20) / 2
+
+      this.rulerWH = {
+        width: screens.clientWidth,
+        height: screens.clientHeight
+      }
+
+      const wh = (screens.clientHeight - 80) / canvas.clientHeight
+      const ww = (screens.clientWidth - 80) / canvas.clientWidth
+      return ww < wh ? ww : wh
+    },
+    setScale() {
+      // 获取到缩放比例，设置它
+      this.scale = this.getScale()
+      if (this.$refs.canvas) {
+        this.$refs.canvas.style.setProperty('--scale', this.scale)
       }
     }
   },
   mounted() {
-    $('#screens').scrollLeft(
-      ($('#container')[0].clientWidth - $('#screens')[0].clientWidth) / 2
-    )
-    $('#screens').scrollTop(
-      ($('#container')[0].clientHeight - $('#screens')[0].clientHeight) / 2
-    )
-
-    this.setCalc()
+    // 设置缩放比例
+    this.setScale()
+    window.addEventListener('resize', this.setScale)
   }
 })
 </script>
@@ -223,8 +242,8 @@ export default Vue.extend({
 
 #screens {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: auto;
 }
 
@@ -242,9 +261,10 @@ export default Vue.extend({
 
 #canvas {
   position: relative;
-  // width: 1920px;
-  // height: 1080px;
+  width: 1920px;
+  height: 1080px;
   background-size: 100% 100%;
-  background: lightblue;
+  transform: scale(var(--scale)) translate(-50%, -50%);
+  background: #232324;
 }
 </style>

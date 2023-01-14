@@ -125,10 +125,18 @@ export default {
     dropDragDoM(e) {
       // 获取拖拽对象的参数
       const arr = JSON.parse(e.dataTransfer.getData('item'))
+
       // 鼠标落点位置相对于当前拖拽存放地的 x y
+<<<<<<< HEAD
 console.log(e.offsetParent)
       arr.left = e.layerX - this.mouseWidth
       arr.top = e.layerY - this.mouseHeight
+=======
+      // arr.left = e.offsetX
+      // arr.top = e.offsetY
+      arr.left = e.layerX - 100
+      arr.top = e.layerY - 100
+>>>>>>> ffe6d845feff441304a3dd9e1c4bd0d7d973d671
 
       // 动态生成随机id
       arr.id = Math.random().toString(36).substr(2)
