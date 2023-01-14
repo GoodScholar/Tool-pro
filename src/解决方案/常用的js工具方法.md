@@ -271,14 +271,14 @@ let blob = new Blob([buffer])
 bTof(data, fileName) {
     const byteString = window.atob(data)
     const options = {
-        type: 'image/jpeg',
+        type: 'image/jpg',
         endings: 'native',
     }
     const u8Arr = new Uint8Array(byteString.length)
     for (let i = 0; i < byteString.length; i++) {
         u8Arr[i] = byteString.charCodeAt(i)
     }
-    return new File([u8Arr], 'file_' + fileName + '.jpg', options)
+    return new File([u8Arr], 'file_' + new Date() + '.jpg', options)
 },
 ```
 
